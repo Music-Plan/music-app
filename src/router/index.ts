@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
-import SideMenu from "../views/SideMenu.vue";
+import Basement from "../views/Basement.vue";
 import SearchResult from "../views/Search/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
@@ -9,7 +9,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/main",
-    component: SideMenu,
+    component: Basement,
     children: [
       {
         path: "search",

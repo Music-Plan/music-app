@@ -44,7 +44,6 @@ export default defineComponent({
 
     const songs = ref<(Song & WithKey)[]>([]);
     const loading = ref(false);
-    const keyword = ref(store.state.search.keyword);
     const resultInfo = ref({
       pageNo: 1,
       total: 0
@@ -53,7 +52,7 @@ export default defineComponent({
       instance
         .get("/search", {
           params: {
-            keyword: keyword.value,
+            keyword: store.state.search.keyword,
             pageNo: pagination ? pagination.current : resultInfo.value.pageNo
           }
         })
@@ -61,8 +60,7 @@ export default defineComponent({
           loading.value = false;
           store.commit("setState", {
             search: {
-              keywordUpdated: false,
-              keyword: keyword.value
+              keywordUpdated: false
             }
           } as StoreState);
           const searchResult = (res.data as SearchSongResultResponse).data;
@@ -88,6 +86,9 @@ export default defineComponent({
             total:
               searchResult.qqMusic.total + (searchResult.cloudMusic.total ?? 0)
           };
+        })
+        .catch(() => {
+          loading.value = false;
         });
       loading.value = true;
     };

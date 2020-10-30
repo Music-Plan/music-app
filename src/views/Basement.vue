@@ -66,18 +66,19 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const store = useStore<StoreState>();
-    const keyword = ref("");
     const currentKeys = ref(["search"]);
 
-    const search = (e: KeyboardEvent) => {
+    const keyword = ref("");
+    const search = () => {
+      if (keyword.value === store.state.search.keyword) return;
       router.push({
         name: "search",
-        query: { keyword: (e.target as HTMLInputElement).value }
+        query: { keyword: keyword.value }
       });
       store.commit("setState", {
         search: {
           keywordUpdated: true,
-          keyword: (e.target as HTMLInputElement).value
+          keyword: keyword.value
         }
       } as StoreState);
     };
