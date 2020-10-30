@@ -2,10 +2,15 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import { Button } from "ant-design-vue";
+import { Menu, Input, Tabs, Table, Tag } from "ant-design-vue";
 
 const app = createApp(App);
-app.use(Button);
+app
+  .use(Menu)
+  .use(Input)
+  .use(Tabs)
+  .use(Table)
+  .use(Tag);
 
 app
   .use(store)
