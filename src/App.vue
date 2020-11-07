@@ -8,4 +8,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+img {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+}
 </style>

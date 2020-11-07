@@ -1,7 +1,12 @@
 import { instance } from "./request";
+import { SearchType } from "@/types/response/search";
 
-export function fetchSongs(keyword: string, pageNo = 1) {
+export function searchByKeyword(
+  keyword: string,
+  pageNo = 1,
+  type: SearchType = "song"
+) {
   return instance.get("/search", {
-    params: { keyword, pageNo }
+    params: { keyword, pageNo, type }
   });
 }
