@@ -70,7 +70,7 @@ export default defineComponent({
 
     const keyword = ref("");
     const search = () => {
-      if (keyword.value === store.state.search.keyword) return;
+      if (!keyword.value) return;
       router.push({
         name: "search",
         query: { keyword: keyword.value }
@@ -100,6 +100,7 @@ export default defineComponent({
 
   #menu-side {
     width: 200px;
+    flex-shrink: 0;
     background-color: rgb(245, 245, 245);
 
     ul#side-menu {

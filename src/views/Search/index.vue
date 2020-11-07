@@ -5,7 +5,7 @@
         :columns="columns"
         :data-source="songs"
         :pagination="{
-          defaultPageSize: 60,
+          defaultPageSize: SEARCH_PAGE_SIZE * 2,
           total: resultInfo.total,
           current: resultInfo.pageNo
         }"
@@ -21,6 +21,12 @@
             <a-tag color="orange">QQ音乐</a-tag>
           </span>
         </template>
+        <template v-slot:artists="{ text: artists }">
+          <template v-for="(artist, index) of artists" :key="index">
+            <a>{{ artist.name }}</a>
+            <span v-if="index < artists.length - 1"> / </span>
+          </template>
+        </template>
       </a-table>
     </a-tab-pane>
   </a-tabs>
@@ -30,13 +36,14 @@
 import { defineComponent, ref, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 import { nanoid } from "nanoid";
-import { instance } from "@/utils/request";
 import { TableColumn, Pagination } from "@/types/antd";
 import { StoreState } from "@/types/store";
 import { Song } from "@/types/response/song";
 import { SearchSongResultResponse } from "@/types/response/search";
 import { Entity, Platform } from "@/types/response/base";
 import { WithKey } from "@/types/base";
+import { fetchSongs } from "@/utils/apis";
+import { SEARCH_PAGE_SIZE } from "@/utils/constants";
 export default defineComponent({
   name: "SearchResult",
   setup() {
@@ -48,14 +55,8 @@ export default defineComponent({
       pageNo: 1,
       total: 0
     });
-    const search = (pagination?: Partial<Pagination>) => {
-      instance
-        .get("/search", {
-          params: {
-            keyword: store.state.search.keyword,
-            pageNo: pagination ? pagination.current : resultInfo.value.pageNo
-          }
-        })
+    const search = (pagination: Partial<Pagination>) => {
+      fetchSongs(store.state.search.keyword, pagination.current)
         .then(res => {
           loading.value = false;
           store.commit("setState", {
@@ -80,11 +81,7 @@ export default defineComponent({
           });
           resultInfo.value = {
             pageNo: searchResult.pageNo,
-            /**
-             * 网易云没数据时不包含total字段
-             */
-            total:
-              searchResult.qqMusic.total + (searchResult.cloudMusic.total ?? 0)
+            total: searchResult.qqMusic.total + searchResult.cloudMusic.total
           };
         })
         .catch(() => {
@@ -102,34 +99,44 @@ export default defineComponent({
       }
     );
 
+    const displayTime = (duration: number) => {
+      const minutes = Math.floor(duration / 60);
+      const seconds = duration - minutes * 60;
+      return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+    };
     const columns: TableColumn<Song>[] = [
       {
         title: "平台",
         dataIndex: "platform",
-        width: 20,
+        width: 50,
         slots: { customRender: "platform" }
       },
       {
-        title: "歌曲",
+        title: "歌名",
         dataIndex: "name",
-        width: 200
+        width: 200,
+        ellipsis: true
       },
       {
         title: "艺术家",
         dataIndex: "artists",
         width: 100,
-        customRender: ({ text: curData }: { text: Entity[] }) =>
-          curData.map(artist => artist.name).join("/")
+        ellipsis: true,
+        slots: { customRender: "artists" }
       },
       {
         title: "专辑",
         dataIndex: "album",
         width: 200,
+        ellipsis: true,
         customRender: ({ text: curData }: { text: Entity }) => curData.name
       },
       {
         title: "时长",
-        width: 20
+        dataIndex: "duration",
+        width: 50,
+        customRender: ({ text: duration }: { text: number }) =>
+          displayTime(duration)
       }
     ];
     return {
@@ -137,7 +144,8 @@ export default defineComponent({
       songs,
       loading,
       resultInfo,
-      search
+      search,
+      SEARCH_PAGE_SIZE
     };
   }
 });

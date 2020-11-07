@@ -8,6 +8,7 @@ export interface TableColumn<T> {
     (_: { text: any; record: T; index: number }): unknown;
   };
   slots?: { customRender: string };
+  ellipsis?: boolean;
 }
 
 export interface Pagination {
