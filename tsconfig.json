@@ -25,7 +25,8 @@
       "dom",
       "dom.iterable",
       "scripthost"
-    ]
+    ],
+    "suppressImplicitAnyIndexErrors": true
   },
   "include": [
     "src/**/*.ts",
