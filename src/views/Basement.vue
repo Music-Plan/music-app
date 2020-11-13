@@ -20,8 +20,6 @@
     <div id="content-side">
       <div class="header">
         <div class="layout">
-          <left-outlined />
-          <right-outlined />
           <a-input
             placeholder="搜索音乐"
             v-model:value="keyword"
@@ -46,22 +44,14 @@ import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { StoreState } from "@/types/store";
-import {
-  SearchOutlined,
-  HomeOutlined,
-  LikeOutlined,
-  LeftOutlined,
-  RightOutlined
-} from "@/icons";
+import { SearchOutlined, HomeOutlined, LikeOutlined } from "@/icons";
 
 export default defineComponent({
   name: "SideMenu",
   components: {
     SearchOutlined,
     HomeOutlined,
-    LikeOutlined,
-    LeftOutlined,
-    RightOutlined
+    LikeOutlined
   },
   setup() {
     const router = useRouter();

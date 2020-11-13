@@ -43,9 +43,11 @@ import { Entity, Platform } from "@/types/response/base";
 import { WithKey } from "@/types/base";
 import { searchByKeyword } from "@/utils/apis";
 import { SEARCH_PAGE_SIZE } from "@/utils/constants";
+import { useRoute } from "vue-router";
 export default defineComponent({
   name: "SearchSongTab",
   setup() {
+    const route = useRoute();
     const store = useStore<StoreState>();
 
     const searchType: SearchType = "song";
@@ -102,6 +104,20 @@ export default defineComponent({
         immediate: true
       }
     );
+    /**
+     * 不通过搜索框直接进入搜索界面时(如通过url直接跳转)
+     * 从url读取数据，依然进行搜索
+     */
+    onMounted(() => {
+      if (route.query.keyword) {
+        store.commit("setState", {
+          search: {
+            keywordUpdated: true,
+            keyword: route.query.keyword
+          }
+        } as StoreState);
+      }
+    });
 
     const displayTime = (duration: number) => {
       const minutes = Math.floor(duration / 60);

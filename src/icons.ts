@@ -3,3 +3,4 @@ export { default as HomeOutlined } from "@ant-design/icons-vue/lib/icons/HomeOut
 export { default as LikeOutlined } from "@ant-design/icons-vue/lib/icons/LikeOutlined";
 export { default as LeftOutlined } from "@ant-design/icons-vue/lib/icons/LeftOutlined";
 export { default as RightOutlined } from "@ant-design/icons-vue/lib/icons/RightOutlined";
+export { default as PlayCircleFilled } from "@ant-design/icons-vue/lib/icons/PlayCircleFilled";
