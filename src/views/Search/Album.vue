@@ -1,12 +1,30 @@
 <template>
-  <div id="search-album">
-    <uni-card
-      v-for="album of albums"
-      :key="album.key"
-      :data="album"
-      hoverable
-    ></uni-card>
-  </div>
+  <a-spin :spinning="loading">
+    <div id="search-album">
+      <div class="result-wrapper">
+        <div class="row" v-for="(row, index) of albums" :key="`row-${index}`">
+          <template v-for="(album, index) of row">
+            <uni-card v-if="album" :key="album.key" :data="album" />
+            <div
+              v-else
+              class="fill-blank"
+              :key="`blank-${index}`"
+              :style="{ width: `${CARD_SIZE}px` }"
+            />
+          </template>
+        </div>
+      </div>
+      <div class="foot-wrapper">
+        <a-pagination
+          :defaultPageSize="SEARCH_PAGE_SIZE * 2"
+          :total="resultInfo.total"
+          :current="resultInfo.pageNo"
+          :disabled="loading"
+          @change="page => search({ current: page })"
+        />
+      </div>
+    </div>
+  </a-spin>
 </template>
 
 <script lang="ts">
@@ -19,10 +37,11 @@ import UniCard from "@/components/UniCard.vue";
 import { StoreState } from "@/types/store";
 import { SearchAlbumResultResponse, SearchType } from "@/types/response/search";
 import { UniCardData } from "@/types/components/uniCard";
-import { WithKey } from "@/types/base";
-import { searchByKeyword } from "@/utils/apis";
 import { TableColumn, Pagination } from "@/types/antd";
 import { Entity, Platform } from "@/types/response/base";
+import { searchByKeyword } from "@/utils/apis";
+import { SEARCH_PAGE_SIZE } from "@/utils/constants";
+import { expandDims } from "@/utils";
 export default defineComponent({
   name: "SearchAlbumTab",
   components: {
@@ -33,7 +52,7 @@ export default defineComponent({
     const store = useStore<StoreState>();
 
     const searchType: SearchType = "album";
-    const albums = ref<(UniCardData & WithKey)[]>([]);
+    const albums = ref<UniCardData[][]>();
     const loading = ref(false);
     const resultInfo = ref({
       pageNo: 1,
@@ -54,7 +73,7 @@ export default defineComponent({
             }
           } as StoreState);
           const searchResult = (res.data as SearchAlbumResultResponse).data;
-          albums.value = searchResult.qqMusic.albums
+          const tmp = searchResult.qqMusic.albums
             .map(
               album =>
                 ({
@@ -71,7 +90,7 @@ export default defineComponent({
                     }
                   },
                   subtitle: album.artist.name
-                } as UniCardData & WithKey)
+                } as UniCardData)
             )
             .concat(
               searchResult.cloudMusic.albums.map(
@@ -79,7 +98,7 @@ export default defineComponent({
                   ({
                     key: nanoid(8),
                     cover: {
-                      src: `${album.pic}?params=${CARD_SIZE}x${CARD_SIZE}`,
+                      src: `${album.pic}?param=${CARD_SIZE}x${CARD_SIZE}`,
                       size: CARD_SIZE
                     },
                     platform: "cloudMusic" as Platform,
@@ -90,9 +109,10 @@ export default defineComponent({
                       }
                     },
                     subtitle: album.artist.name
-                  } as UniCardData & WithKey)
+                  } as UniCardData)
               )
             );
+          albums.value = expandDims<UniCardData>(tmp, 6);
           resultInfo.value = {
             pageNo: searchResult.pageNo,
             total: searchResult.qqMusic.total + searchResult.cloudMusic.total
@@ -117,7 +137,9 @@ export default defineComponent({
       albums,
       loading,
       resultInfo,
-      search
+      search,
+      SEARCH_PAGE_SIZE,
+      CARD_SIZE
     };
   }
 });
@@ -125,12 +147,17 @@ export default defineComponent({
 
 <style lang="scss">
 #search-album {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  margin: 1rem 0;
 
-  .uni-card {
-    margin: 2rem;
+  & > .result-wrapper > .row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+
+  & > .foot-wrapper {
+    display: flex;
+    flex-direction: row-reverse;
   }
 }
 </style>

@@ -1,6 +1,7 @@
+import { WithKey } from "../base";
 import { Platform } from "../response/base";
 
-export interface UniCardData {
+export interface UniCardData extends WithKey {
   cover: {
     src: string;
     size?: number;
@@ -13,6 +14,6 @@ export interface UniCardData {
 interface ClickableText {
   text: string;
   onClick?: {
-    (text: string): unknown;
+    (text: string): void;
   };
 }

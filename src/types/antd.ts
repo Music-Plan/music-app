@@ -5,7 +5,7 @@ export interface TableColumn<T> {
   title?: string;
   width?: number;
   customRender?: {
-    (_: { text: any; record: T; index: number }): unknown;
+    (_: { text: any; record: T; index: number }): string;
   };
   slots?: { customRender: string };
   ellipsis?: boolean;

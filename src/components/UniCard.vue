@@ -1,12 +1,16 @@
 <template>
-  <div
-    class="uni-card"
-    :style="{ width: coverClasses.width }"
-    @mouseenter="toggleFocus(true)"
-    @mouseleave="toggleFocus(false)"
-  >
-    <div class="uni-card-cover-wrapper">
-      <img class="uni-card-cover" :src="data.cover.src" :style="coverClasses" />
+  <div class="uni-card" :style="{ width: coverClasses.width }">
+    <div
+      class="uni-card-cover-wrapper"
+      @mouseenter="toggleFocus(true)"
+      @mouseleave="toggleFocus(false)"
+    >
+      <img
+        class="uni-card-cover"
+        :src="data.cover.src"
+        :style="coverClasses"
+        loading="lazy"
+      />
       <span class="platform-bar" :class="platformClass">
         {{ platformClass["cloud-music"] ? "网易云音乐" : "QQ音乐" }}
       </span>
