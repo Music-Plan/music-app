@@ -8,17 +8,11 @@
         total: resultInfo.total,
         current: resultInfo.pageNo
       }"
-      :loading="loading"
       :show-total="(total, range) => `${total}条结果`"
       @change="search"
     >
       <template v-slot:name="{ text, record }">
-        <template v-if="record.platform === 'cloudMusic'">
-          <a-tag color="red">网易云</a-tag>
-        </template>
-        <template v-else>
-          <a-tag color="orange">QQ音乐</a-tag>
-        </template>
+        <platform-tag :platform="record.platform"></platform-tag>
         <span>{{ text }}</span>
       </template>
       <template v-slot:artists="{ text: artists }">
@@ -32,7 +26,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, watch } from "vue";
+import PlatformTag from "@/components/PlatformTag.vue";
+import { defineComponent, ref, onMounted, watch, computed } from "vue";
+import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import { nanoid } from "nanoid";
 import { TableColumn, Pagination } from "@/types/antd";
@@ -40,19 +36,25 @@ import { StoreState } from "@/types/store";
 import { Song } from "@/types/response/song";
 import { SearchSongResultResponse, SearchType } from "@/types/response/search";
 import { Entity, Platform } from "@/types/response/base";
-import { WithKey } from "@/types/base";
+import { RecursivePartial, WithKey } from "@/types/base";
 import { searchByKeyword } from "@/utils/apis";
 import { SEARCH_PAGE_SIZE } from "@/utils/constants";
-import { useRoute } from "vue-router";
+import { sec2Time, setStoreState } from "@/utils";
+
 export default defineComponent({
   name: "SearchSongTab",
+  components: {
+    PlatformTag
+  },
   setup() {
     const route = useRoute();
     const store = useStore<StoreState>();
+    const _setStoreState = (payload: RecursivePartial<StoreState>) =>
+      setStoreState(store, payload);
 
     const searchType: SearchType = "song";
     const songs = ref<(Song & WithKey)[]>([]);
-    const loading = ref(false);
+    const loading = computed(() => store.state.loading);
     const resultInfo = ref({
       pageNo: 1,
       total: 0
@@ -64,12 +66,6 @@ export default defineComponent({
         searchType
       )
         .then(res => {
-          loading.value = false;
-          store.commit("setState", {
-            search: {
-              keywordUpdated: false
-            }
-          } as StoreState);
           const searchResult = (res.data as SearchSongResultResponse).data;
           songs.value = searchResult.qqMusic.songs
             .map(song => {
@@ -90,40 +86,48 @@ export default defineComponent({
             total: searchResult.qqMusic.total + searchResult.cloudMusic.total
           };
         })
-        .catch(() => {
-          loading.value = false;
+        .finally(() => {
+          _setStoreState({
+            loading: false,
+            search: {
+              keywordUpdated: false
+            }
+          });
         });
-      loading.value = true;
+      _setStoreState({
+        loading: true
+      });
     };
     watch(
       () => store.state.search.keywordUpdated,
       () => {
-        if (store.state.search.keywordUpdated) search({ current: 1 });
+        // 当前tab激活的状态下才重新发送请求
+        if (
+          store.state.search.keywordUpdated &&
+          store.state.search.activeKey === "song"
+        )
+          search({ current: 1 });
       },
       {
         immediate: true
       }
     );
-    /**
-     * 不通过搜索框直接进入搜索界面时(如通过url直接跳转)
-     * 从url读取数据，依然进行搜索
-     */
+
+    // 不通过搜索框直接进入搜索界面时(如通过url直接跳转)
+    // 从url读取数据，依然进行搜索
+
     onMounted(() => {
       if (route.query.keyword) {
-        store.commit("setState", {
+        _setStoreState({
           search: {
+            activeKey: "song",
             keywordUpdated: true,
-            keyword: route.query.keyword
+            keyword: route.query.keyword as string
           }
-        } as StoreState);
+        });
       }
     });
 
-    const displayTime = (duration: number) => {
-      const minutes = Math.floor(duration / 60);
-      const seconds = duration - minutes * 60;
-      return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-    };
     const columns: TableColumn<Song>[] = [
       {
         title: "歌名",
@@ -151,7 +155,7 @@ export default defineComponent({
         dataIndex: "duration",
         width: 50,
         customRender: ({ text: duration }: { text: number }) =>
-          displayTime(duration)
+          sec2Time(duration)
       }
     ];
     return {

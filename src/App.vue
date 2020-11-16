@@ -13,6 +13,10 @@ img {
   max-width: 100%;
   overflow: hidden;
 }
+p {
+  color: #333;
+  margin: 0;
+}
 .ant-table-thead > tr > th {
   background-color: transparent;
   border-bottom: none;

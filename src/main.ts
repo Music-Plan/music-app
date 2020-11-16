@@ -9,7 +9,8 @@ import {
   Table,
   Tag,
   Pagination,
-  Spin
+  Spin,
+  Button
 } from "ant-design-vue";
 
 const app = createApp(App);
@@ -20,7 +21,8 @@ app
   .use(Table)
   .use(Tag)
   .use(Pagination)
-  .use(Spin);
+  .use(Spin)
+  .use(Button);
 
 app
   .use(store)

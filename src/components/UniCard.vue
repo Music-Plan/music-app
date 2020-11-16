@@ -1,5 +1,5 @@
 <template>
-  <div class="uni-card" :style="{ width: coverClasses.width }">
+  <div class="uni-card" :style="{ width: coverStyle.width }">
     <div
       class="uni-card-cover-wrapper"
       @mouseenter="toggleFocus(true)"
@@ -8,13 +8,13 @@
       <img
         class="uni-card-cover"
         :src="data.cover.src"
-        :style="coverClasses"
+        :style="coverStyle"
         loading="lazy"
       />
       <span class="platform-bar" :class="platformClass">
         {{ platformClass["cloud-music"] ? "网易云音乐" : "QQ音乐" }}
       </span>
-      <div class="mask" :class="maskClass">
+      <div class="mask" :class="maskClass" @click="data.title.onClick">
         <play-circle-filled class="play-icon" />
       </div>
     </div>
@@ -64,7 +64,7 @@ export default defineComponent({
       "cloud-music": props.data.platform === "cloudMusic"
     };
 
-    const coverClasses = {
+    const coverStyle = {
       width: `${props.data.cover.size ?? 150}px`,
       height: `${props.data.cover.size ?? 150}px`
     };
@@ -78,7 +78,7 @@ export default defineComponent({
 
     return {
       platformClass,
-      coverClasses,
+      coverStyle,
       toggleFocus,
       maskClass
     };
@@ -131,6 +131,7 @@ export default defineComponent({
       top: 0;
       transition: background-color 0.5s;
       border-radius: 10px;
+      cursor: pointer;
 
       &.focused {
         background-color: rgba($color: #000000, $alpha: 0.5);

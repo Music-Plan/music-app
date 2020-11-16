@@ -1,5 +1,5 @@
 <template>
-  <a-tabs>
+  <a-tabs @change="setActiveTab">
     <a-tab-pane key="song" tab="歌曲">
       <song-tab />
     </a-tab-pane>
@@ -13,11 +13,30 @@
 import { defineComponent } from "vue";
 import SongTab from "./Song.vue";
 import AlbumTab from "./Album.vue";
+import { setStoreState } from "@/utils";
+import { useStore } from "vuex";
+import { StoreState } from "@/types/store";
+
 export default defineComponent({
   name: "SearchResult",
   components: {
     SongTab,
     AlbumTab
+  },
+  setup() {
+    const store = useStore<StoreState>();
+
+    const setActiveTab = (key: string) => {
+      setStoreState(store, {
+        search: {
+          activeKey: key
+        }
+      });
+    };
+
+    return {
+      setActiveTab
+    };
   }
 });
 </script>

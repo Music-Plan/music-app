@@ -1,35 +1,33 @@
 <template>
-  <a-spin :spinning="loading">
-    <div id="search-album">
-      <div class="result-wrapper">
-        <div class="row" v-for="(row, index) of albums" :key="`row-${index}`">
-          <template v-for="(album, index) of row">
-            <uni-card v-if="album" :key="album.key" :data="album" />
-            <div
-              v-else
-              class="fill-blank"
-              :key="`blank-${index}`"
-              :style="{ width: `${CARD_SIZE}px` }"
-            />
-          </template>
-        </div>
-      </div>
-      <div class="foot-wrapper">
-        <a-pagination
-          :defaultPageSize="SEARCH_PAGE_SIZE * 2"
-          :total="resultInfo.total"
-          :current="resultInfo.pageNo"
-          :disabled="loading"
-          @change="page => search({ current: page })"
-        />
+  <div id="search-album">
+    <div class="result-wrapper">
+      <div class="row" v-for="(row, index) of albums" :key="`row-${index}`">
+        <template v-for="(album, index) of row">
+          <uni-card v-if="album" :key="album.key" :data="album" />
+          <div
+            v-else
+            class="fill-blank"
+            :key="`blank-${index}`"
+            :style="{ width: `${COVER_SIZE}px` }"
+          />
+        </template>
       </div>
     </div>
-  </a-spin>
+    <div class="foot-wrapper">
+      <a-pagination
+        :defaultPageSize="SEARCH_PAGE_SIZE * 2"
+        :total="resultInfo.total"
+        :current="resultInfo.pageNo"
+        :disabled="loading"
+        @change="page => search({ current: page })"
+      />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import { useRouter } from "vue-router";
-import { defineComponent, ref, watch, onMounted } from "vue";
+import { defineComponent, ref, watch, onMounted, computed } from "vue";
 import { useStore } from "vuex";
 import { nanoid } from "nanoid";
 import dayjs from "dayjs";
@@ -39,9 +37,11 @@ import { SearchAlbumResultResponse, SearchType } from "@/types/response/search";
 import { UniCardData } from "@/types/components/uniCard";
 import { TableColumn, Pagination } from "@/types/antd";
 import { Entity, Platform } from "@/types/response/base";
+import { RecursivePartial } from "@/types/base";
 import { searchByKeyword } from "@/utils/apis";
-import { SEARCH_PAGE_SIZE } from "@/utils/constants";
-import { expandDims } from "@/utils";
+import { SEARCH_PAGE_SIZE, COVER_SIZE } from "@/utils/constants";
+import { expandDims, setStoreState } from "@/utils";
+
 export default defineComponent({
   name: "SearchAlbumTab",
   components: {
@@ -51,14 +51,16 @@ export default defineComponent({
     const router = useRouter();
     const store = useStore<StoreState>();
 
+    const _setStoreState = (payload: RecursivePartial<StoreState>) =>
+      setStoreState(store, payload);
+
     const searchType: SearchType = "album";
     const albums = ref<UniCardData[][]>();
-    const loading = ref(false);
+    const loading = computed(() => store.state.loading);
     const resultInfo = ref({
       pageNo: 1,
       total: 0
     });
-    const CARD_SIZE = 250;
     const search = (pagination: Partial<Pagination>) => {
       searchByKeyword(
         store.state.search.keyword,
@@ -66,12 +68,6 @@ export default defineComponent({
         searchType
       )
         .then(res => {
-          loading.value = false;
-          store.commit("setState", {
-            search: {
-              keywordUpdated: false
-            }
-          } as StoreState);
           const searchResult = (res.data as SearchAlbumResultResponse).data;
           const tmp = searchResult.qqMusic.albums
             .map(
@@ -80,13 +76,24 @@ export default defineComponent({
                   key: nanoid(8),
                   cover: {
                     src: album.pic,
-                    size: CARD_SIZE
+                    size: COVER_SIZE
                   },
-                  platform: "qqMusic" as Platform,
+                  platform: "qqMusic",
                   title: {
                     text: album.name,
                     onClick() {
-                      router.push(`/album/${album.mid}`);
+                      router.push({
+                        name: "albumDetail",
+                        params: {
+                          id: album.mid!
+                        }
+                      });
+                      _setStoreState({
+                        loading: true,
+                        albumDetail: {
+                          platform: "qqMusic"
+                        }
+                      });
                     }
                   },
                   subtitle: album.artist.name
@@ -98,14 +105,25 @@ export default defineComponent({
                   ({
                     key: nanoid(8),
                     cover: {
-                      src: `${album.pic}?param=${CARD_SIZE}x${CARD_SIZE}`,
-                      size: CARD_SIZE
+                      src: `${album.pic}?param=${COVER_SIZE}x${COVER_SIZE}`,
+                      size: COVER_SIZE
                     },
-                    platform: "cloudMusic" as Platform,
+                    platform: "cloudMusic",
                     title: {
                       text: album.name,
                       onClick() {
-                        router.push(`/album/${album.id}`);
+                        router.push({
+                          name: "albumDetail",
+                          params: {
+                            id: album.id
+                          }
+                        });
+                        _setStoreState({
+                          loading: true,
+                          albumDetail: {
+                            platform: "cloudMusic"
+                          }
+                        });
                       }
                     },
                     subtitle: album.artist.name
@@ -118,15 +136,26 @@ export default defineComponent({
             total: searchResult.qqMusic.total + searchResult.cloudMusic.total
           };
         })
-        .catch(() => {
-          loading.value = false;
+        .finally(() => {
+          _setStoreState({
+            loading: false,
+            search: {
+              keywordUpdated: false
+            }
+          });
         });
-      loading.value = true;
+      _setStoreState({
+        loading: true
+      });
     };
     watch(
       () => store.state.search.keywordUpdated,
       () => {
-        if (store.state.search.keywordUpdated) search({ current: 1 });
+        if (
+          store.state.search.keywordUpdated &&
+          store.state.search.activeKey === "album"
+        )
+          search({ current: 1 });
       }
     );
     onMounted(() => {
@@ -139,7 +168,7 @@ export default defineComponent({
       resultInfo,
       search,
       SEARCH_PAGE_SIZE,
-      CARD_SIZE
+      COVER_SIZE
     };
   }
 });

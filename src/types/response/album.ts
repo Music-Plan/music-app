@@ -1,4 +1,4 @@
-import { Entity, Platform } from "./base";
+import { BaseResponse, Entity, Platform } from "./base";
 import { Song } from "./song";
 
 export interface Album extends Entity {
@@ -9,4 +9,9 @@ export interface Album extends Entity {
   platform: Platform;
 }
 
-export type AlbumSong = Omit<Song, "album">;
+export interface AlbumDetail {
+  songs: Omit<Song, "album">[];
+  info: Omit<Album, "songCount">;
+}
+
+export type AlbumDetailResponse = BaseResponse<AlbumDetail>;

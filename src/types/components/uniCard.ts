@@ -1,4 +1,4 @@
-import { WithKey } from "../base";
+import { WithKey, ClickableText } from "../base";
 import { Platform } from "../response/base";
 
 export interface UniCardData extends WithKey {
@@ -9,11 +9,4 @@ export interface UniCardData extends WithKey {
   title: string | ClickableText;
   subtitle?: string | ClickableText;
   platform: Platform;
-}
-
-interface ClickableText {
-  text: string;
-  onClick?: {
-    (text: string): void;
-  };
 }

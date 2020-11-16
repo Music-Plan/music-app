@@ -4,3 +4,4 @@ export { default as LikeOutlined } from "@ant-design/icons-vue/lib/icons/LikeOut
 export { default as LeftOutlined } from "@ant-design/icons-vue/lib/icons/LeftOutlined";
 export { default as RightOutlined } from "@ant-design/icons-vue/lib/icons/RightOutlined";
 export { default as PlayCircleFilled } from "@ant-design/icons-vue/lib/icons/PlayCircleFilled";
+export { default as CaretRightOutlined } from "@ant-design/icons-vue/lib/icons/CaretRightOutlined";
