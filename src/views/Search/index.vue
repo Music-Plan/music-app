@@ -1,5 +1,5 @@
 <template>
-  <a-tabs @change="setActiveTab">
+  <a-tabs :activeKey="activeKey" @change="setActiveTab">
     <a-tab-pane key="song" tab="歌曲">
       <song-tab />
     </a-tab-pane>
@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import SongTab from "./Song.vue";
 import AlbumTab from "./Album.vue";
 import { setStoreState } from "@/utils";
@@ -26,6 +26,7 @@ export default defineComponent({
   setup() {
     const store = useStore<StoreState>();
 
+    const activeKey = computed(() => store.state.search.activeKey);
     const setActiveTab = (key: string) => {
       setStoreState(store, {
         search: {
@@ -35,6 +36,7 @@ export default defineComponent({
     };
 
     return {
+      activeKey,
       setActiveTab
     };
   }

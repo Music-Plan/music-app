@@ -83,14 +83,11 @@ export default defineComponent({
                     text: album.name,
                     onClick() {
                       router.push({
-                        name: "albumDetail",
-                        params: {
-                          id: album.mid!
-                        }
+                        name: "albumDetail"
                       });
                       _setStoreState({
-                        loading: true,
                         albumDetail: {
+                          id: album.mid,
                           platform: "qqMusic"
                         }
                       });
@@ -113,14 +110,11 @@ export default defineComponent({
                       text: album.name,
                       onClick() {
                         router.push({
-                          name: "albumDetail",
-                          params: {
-                            id: album.id
-                          }
+                          name: "albumDetail"
                         });
                         _setStoreState({
-                          loading: true,
                           albumDetail: {
+                            id: album.id,
                             platform: "cloudMusic"
                           }
                         });

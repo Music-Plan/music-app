@@ -114,13 +114,11 @@ export default defineComponent({
     );
 
     // 不通过搜索框直接进入搜索界面时(如通过url直接跳转)
-    // 从url读取数据，依然进行搜索
-
+    // 从url读取数据进行搜索
     onMounted(() => {
       if (route.query.keyword) {
         _setStoreState({
           search: {
-            activeKey: "song",
             keywordUpdated: true,
             keyword: route.query.keyword as string
           }

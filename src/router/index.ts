@@ -1,5 +1,4 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
-import store from "@/store";
 import Basement from "../views/Basement.vue";
 import SearchResult from "../views/Search/index.vue";
 import AlbumDetail from "../views/AlbumDetail.vue";
@@ -19,10 +18,9 @@ const routes: Array<RouteRecordRaw> = [
         component: SearchResult
       },
       {
-        path: "album/:id/detail",
+        path: "album/detail",
         name: "albumDetail",
-        component: AlbumDetail,
-        props: true
+        component: AlbumDetail
       }
     ]
   }
@@ -31,13 +29,6 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHashHistory(),
   routes
-});
-router.beforeEach((to, from, next) => {
-  if (to.name === "albumDetail") {
-    if (store.state.albumDetail.platform) next();
-    else next("/main");
-  }
-  next();
 });
 
 export default router;

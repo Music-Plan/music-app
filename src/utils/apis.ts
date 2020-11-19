@@ -12,6 +12,6 @@ export function searchByKeyword(
   });
 }
 
-export function fetchAlbumDetail(id: string, platform: Platform) {
+export function fetchAlbumDetail(id: number | string, platform: Platform) {
   return instance.get(`/album/${id}/detail?platform=${platform}`);
 }

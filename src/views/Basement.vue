@@ -74,7 +74,6 @@ export default defineComponent({
       });
       setStoreState(store, {
         search: {
-          activeKey: store.state.search.activeKey ?? "song",
           keywordUpdated: true,
           keyword: keyword.value
         }

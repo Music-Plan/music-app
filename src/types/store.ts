@@ -4,11 +4,12 @@ export interface StoreState {
   currentTab: string;
   loading: boolean;
   search: {
-    activeKey: string | null;
+    activeKey: string;
     keywordUpdated: boolean;
     keyword: string;
   };
   albumDetail: {
+    id: number | string | null;
     platform: Platform | null;
   };
 }

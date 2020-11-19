@@ -1,6 +1,6 @@
 <template>
   <div id="album-detail-view">
-    <div class="placeholder" v-if="loading"></div>
+    <div class="placeholder" v-if="loading" />
     <template v-else>
       <div class="head-wrapper">
         <div class="layout">
@@ -55,36 +55,42 @@ import { Song } from "@/types/response/song";
 import { WithKey } from "@/types/base";
 import { nanoid } from "nanoid";
 import { TableColumn } from "@/types/antd";
+import { message } from "ant-design-vue";
+import { useRouter } from "vue-router";
 
 type AlbumInfo = Omit<Album, "songCount">;
 type AlbumSong = Omit<Song, "album"> & WithKey;
 
 export default defineComponent({
   name: "AlbumDetail",
-  props: {
-    id: {
-      type: String,
-      required: true
-    }
-  },
   components: {
     CaretRightOutlined
   },
-  setup(props) {
+  setup() {
     const store = useStore<StoreState>();
+    const router = useRouter();
 
     const info = ref<AlbumInfo>();
     const songs = ref<AlbumSong[]>();
     const loading = computed(() => store.state.loading);
-    const platform = computed(() => store.state.albumDetail.platform!);
-    fetchAlbumDetail(props.id, platform.value)
+    const { id, platform } = store.state.albumDetail;
+    if (!id || !platform) {
+      message.info("没有数据，回到首页");
+      router.push("/main");
+      // loading未true时，不会渲染页面
+      // 因为此时info和songs都为空，渲染了就会报错
+      return {
+        loading: true
+      };
+    }
+    fetchAlbumDetail(id!, platform!)
       .then(res => {
         const detail = (res.data as AlbumDetailResponse).data;
         info.value = detail.info;
         info.value.publishTime = dayjs(info.value.publishTime).format(
           "YYYY-MM-DD"
         );
-        if (platform.value === "cloudMusic") {
+        if (platform === "cloudMusic") {
           info.value.pic += `?param=${COVER_SIZE}x${COVER_SIZE}`;
         }
         songs.value = detail.songs.map(
@@ -100,6 +106,9 @@ export default defineComponent({
           loading: false
         });
       });
+    setStoreState(store, {
+      loading: true
+    });
 
     const columns: TableColumn<Song>[] = [
       {

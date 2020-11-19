@@ -7,11 +7,12 @@ export default createStore<StoreState>({
     currentTab: "",
     loading: false,
     search: {
-      activeKey: null,
+      activeKey: "song",
       keywordUpdated: false,
       keyword: ""
     },
     albumDetail: {
+      id: null,
       platform: null
     }
   },
