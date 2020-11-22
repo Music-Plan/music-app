@@ -13,7 +13,12 @@ export interface SongQuality {
 export interface Song extends Entity {
   vip: boolean;
   artists: Entity[];
-  album: Entity;
+  album: Entity & {
+    /**
+     * 网易云有，qq音乐没有
+     */
+    pic?: string;
+  };
   quality: SongQuality[];
   url: string;
   platform: Platform;

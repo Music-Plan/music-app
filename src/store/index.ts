@@ -14,6 +14,13 @@ export default createStore<StoreState>({
     albumDetail: {
       id: null,
       platform: null
+    },
+    playing: {
+      url: "",
+      cover: "",
+      title: "",
+      artist: "",
+      duration: 0
     }
   },
   mutations: {

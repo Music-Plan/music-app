@@ -40,7 +40,9 @@
           </a-spin>
         </div>
       </div>
-      <div class="footer"></div>
+      <div class="footer">
+        <footer-player />
+      </div>
     </div>
   </div>
 </template>
@@ -52,13 +54,15 @@ import { useStore } from "vuex";
 import { StoreState } from "@/types/store";
 import { SearchOutlined, HomeOutlined, LikeOutlined } from "@/icons";
 import { setStoreState } from "@/utils";
+import FooterPlayer from "@/views/FooterPlayer.vue";
 
 export default defineComponent({
-  name: "SideMenu",
+  name: "Basement",
   components: {
     SearchOutlined,
     HomeOutlined,
-    LikeOutlined
+    LikeOutlined,
+    FooterPlayer
   },
   setup() {
     const router = useRouter();
@@ -121,7 +125,7 @@ export default defineComponent({
       flex-shrink: 0;
       padding: 0 1rem;
 
-      .layout {
+      & > .layout {
         flex-grow: 1;
 
         & > .anticon {
@@ -142,7 +146,7 @@ export default defineComponent({
       flex-grow: 1;
       overflow-y: scroll;
 
-      .wrapper {
+      & > .wrapper {
         padding: 0 1rem;
       }
     }
