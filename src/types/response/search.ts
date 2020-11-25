@@ -1,11 +1,12 @@
 import { BaseResponse } from "./base";
 import { Song } from "./song";
 import { Album } from "./album";
+import { Artist } from "./artist";
 
 export type SearchType =
   | "song"
   | "album"
-  | "signer"
+  | "artist"
   | "songlist"
   | "user"
   | "mv";
@@ -16,6 +17,11 @@ interface SearchSongPlatform {
 }
 interface SearchAlbumPlatform {
   albums: Album[];
+  total: number;
+}
+
+interface SearchArtistPlatform {
+  artists: Artist[];
   total: number;
 }
 
@@ -37,5 +43,12 @@ interface SearchAlbumResult extends SearchResultBase {
   searchType: "album";
 }
 
+interface SearchArtistResult extends SearchResultBase {
+  qqMusic: SearchArtistPlatform;
+  cloudMusic: SearchArtistPlatform;
+  searchType: "artist";
+}
+
 export type SearchSongResultResponse = BaseResponse<SearchSongResult>;
 export type SearchAlbumResultResponse = BaseResponse<SearchAlbumResult>;
+export type SearchArtistResultResponse = BaseResponse<SearchArtistResult>;
