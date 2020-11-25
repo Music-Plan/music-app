@@ -1,5 +1,5 @@
 export type WithKey = {
-  key?: string;
+  key?: string | number;
 };
 
 export interface ClickableText {
