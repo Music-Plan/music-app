@@ -2,10 +2,10 @@ export interface TableColumn<T> {
   dataIndex?: keyof T;
   fixed?: "left" | "right";
   key?: string;
-  title: string;
+  title?: string;
   width?: number;
   customRender?: {
-    (_: { text: any; record: T; index: number }): unknown;
+    (_: { text: any; record: T; index: number }): string;
   };
   slots?: { customRender: string };
   ellipsis?: boolean;

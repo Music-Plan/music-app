@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import Basement from "../views/Basement.vue";
 import SearchResult from "../views/Search/index.vue";
+import AlbumDetail from "../views/AlbumDetail.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -15,6 +16,11 @@ const routes: Array<RouteRecordRaw> = [
         path: "search",
         name: "search",
         component: SearchResult
+      },
+      {
+        path: "album/detail",
+        name: "albumDetail",
+        component: AlbumDetail
       }
     ]
   }

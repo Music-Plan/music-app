@@ -20,12 +20,12 @@
     <div id="content-side">
       <div class="header">
         <div class="layout">
-          <left-outlined />
-          <right-outlined />
           <a-input
             placeholder="搜索音乐"
             v-model:value="keyword"
             @keydown.enter="search"
+            size="large"
+            class="search-input"
           >
             <template v-slot:prefix>
               <search-outlined />
@@ -34,34 +34,35 @@
         </div>
       </div>
       <div class="content">
-        <router-view></router-view>
+        <div class="wrapper">
+          <a-spin :spinning="loading">
+            <router-view />
+          </a-spin>
+        </div>
       </div>
-      <div class="footer"></div>
+      <div class="footer">
+        <footer-player />
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { StoreState } from "@/types/store";
-import {
-  SearchOutlined,
-  HomeOutlined,
-  LikeOutlined,
-  LeftOutlined,
-  RightOutlined
-} from "@/icons";
+import { SearchOutlined, HomeOutlined, LikeOutlined } from "@/icons";
+import { setStoreState } from "@/utils";
+import FooterPlayer from "@/views/FooterPlayer.vue";
 
 export default defineComponent({
-  name: "SideMenu",
+  name: "Basement",
   components: {
     SearchOutlined,
     HomeOutlined,
     LikeOutlined,
-    LeftOutlined,
-    RightOutlined
+    FooterPlayer
   },
   setup() {
     const router = useRouter();
@@ -75,18 +76,21 @@ export default defineComponent({
         name: "search",
         query: { keyword: keyword.value }
       });
-      store.commit("setState", {
+      setStoreState(store, {
         search: {
           keywordUpdated: true,
           keyword: keyword.value
         }
-      } as StoreState);
+      });
     };
+
+    const loading = computed(() => store.state.loading);
 
     return {
       keyword,
       currentKeys,
-      search
+      search,
+      loading
     };
   }
 });
@@ -110,14 +114,18 @@ export default defineComponent({
 
   #content-side {
     flex-grow: 1;
-    padding: 0 1rem;
-    overflow-y: scroll;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 
     & > .header {
       display: flex;
       align-items: center;
+      flex-shrink: 0;
+      padding: 0 1rem;
 
-      .layout {
+      & > .layout {
         flex-grow: 1;
 
         & > .anticon {
@@ -125,9 +133,21 @@ export default defineComponent({
         }
 
         & > .ant-input-affix-wrapper {
-          width: auto;
-          margin-left: 1rem;
+          width: 300px;
+
+          & > input.ant-input {
+            border-radius: 2rem;
+          }
         }
+      }
+    }
+
+    & > .content {
+      flex-grow: 1;
+      overflow-y: scroll;
+
+      & > .wrapper {
+        padding: 0 1rem;
       }
     }
   }
@@ -135,7 +155,7 @@ export default defineComponent({
   #menu-side,
   #content-side {
     & > .header {
-      height: 3rem;
+      height: 4rem;
     }
   }
 }

@@ -5,9 +5,22 @@ import { StoreState } from "../types/store";
 export default createStore<StoreState>({
   state: {
     currentTab: "",
+    loading: false,
     search: {
+      activeKey: "song",
       keywordUpdated: false,
       keyword: ""
+    },
+    albumDetail: {
+      id: null,
+      platform: null
+    },
+    playing: {
+      url: "",
+      cover: "",
+      title: "",
+      artist: "",
+      duration: 0
     }
   },
   mutations: {

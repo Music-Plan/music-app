@@ -3,3 +3,8 @@ export { default as HomeOutlined } from "@ant-design/icons-vue/lib/icons/HomeOut
 export { default as LikeOutlined } from "@ant-design/icons-vue/lib/icons/LikeOutlined";
 export { default as LeftOutlined } from "@ant-design/icons-vue/lib/icons/LeftOutlined";
 export { default as RightOutlined } from "@ant-design/icons-vue/lib/icons/RightOutlined";
+export { default as PlayCircleFilled } from "@ant-design/icons-vue/lib/icons/PlayCircleFilled";
+export { default as CaretRightOutlined } from "@ant-design/icons-vue/lib/icons/CaretRightOutlined";
+export { default as StepBackwardFilled } from "@ant-design/icons-vue/lib/icons/StepBackwardFilled";
+export { default as StepForwardFilled } from "@ant-design/icons-vue/lib/icons/StepForwardFilled";
+export { default as PauseCircleFilled } from "@ant-design/icons-vue/lib/icons/PauseCircleFilled";

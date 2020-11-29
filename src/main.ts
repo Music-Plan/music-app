@@ -2,7 +2,17 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import { Menu, Input, Tabs, Table, Tag } from "ant-design-vue";
+import {
+  Menu,
+  Input,
+  Tabs,
+  Table,
+  Tag,
+  Pagination,
+  Spin,
+  Button,
+  Slider
+} from "ant-design-vue";
 
 const app = createApp(App);
 app
@@ -10,7 +20,11 @@ app
   .use(Input)
   .use(Tabs)
   .use(Table)
-  .use(Tag);
+  .use(Tag)
+  .use(Pagination)
+  .use(Spin)
+  .use(Button)
+  .use(Slider);
 
 app
   .use(store)
