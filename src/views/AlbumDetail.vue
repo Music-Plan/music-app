@@ -153,7 +153,7 @@ export default defineComponent({
     min-height: 200px;
   }
 
-  .head-wrapper {
+  & > .head-wrapper {
     display: flex;
 
     & > .layout {
@@ -178,7 +178,7 @@ export default defineComponent({
     }
   }
 
-  .content-wrapper {
+  & > .content-wrapper {
     margin-top: 1rem;
     .ant-table-tbody > tr.ant-table-row > td > span.song-order {
       display: inline-block;

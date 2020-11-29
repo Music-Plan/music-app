@@ -12,4 +12,11 @@ export interface StoreState {
     id: number | string | null;
     platform: Platform | null;
   };
+  playing: {
+    url: string;
+    cover: string;
+    title: string;
+    artist: string;
+    duration: number;
+  };
 }

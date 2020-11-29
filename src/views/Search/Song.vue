@@ -10,6 +10,7 @@
       }"
       :show-total="(total, range) => `${total}条结果`"
       @change="search"
+      :customRow="customRow"
     >
       <template v-slot:name="{ text, record }">
         <platform-tag :platform="record.platform"></platform-tag>
@@ -37,9 +38,10 @@ import { Song } from "@/types/response/song";
 import { SearchSongResultResponse, SearchType } from "@/types/response/search";
 import { Entity, Platform } from "@/types/response/base";
 import { RecursivePartial, WithKey } from "@/types/base";
-import { searchByKeyword } from "@/utils/apis";
-import { SEARCH_PAGE_SIZE } from "@/utils/constants";
+import { fetchAlbumDetail, searchByKeyword } from "@/utils/apis";
+import { ALBUM_COVER_PLACEHOLDER, SEARCH_PAGE_SIZE } from "@/utils/constants";
 import { sec2Time, setStoreState } from "@/utils";
+import { AlbumDetailResponse } from "@/types/response/album";
 
 export default defineComponent({
   name: "SearchSongTab",
@@ -112,7 +114,6 @@ export default defineComponent({
         immediate: true
       }
     );
-
     // 不通过搜索框直接进入搜索界面时(如通过url直接跳转)
     // 从url读取数据进行搜索
     onMounted(() => {
@@ -125,6 +126,41 @@ export default defineComponent({
         });
       }
     });
+
+    const coverLog: {
+      [mid: string]: string;
+    } = {};
+    const customRow = (record: Song, index: number) => {
+      return {
+        dblclick() {
+          // qq音乐没有专辑封面数据，因此需要额外请求
+          if (record.platform === "qqMusic" && !coverLog[record.album.mid!]) {
+            fetchAlbumDetail(record.album.mid!, "qqMusic").then(res => {
+              const pic = (res.data as AlbumDetailResponse).data.info.pic;
+              // 将返回的数据保存在log内，避免重复请求
+              coverLog[record.album.mid!] = pic;
+              _setStoreState({
+                playing: {
+                  cover: pic
+                }
+              });
+            });
+          }
+          _setStoreState({
+            playing: {
+              url: record.url,
+              cover:
+                record.platform === "cloudMusic"
+                  ? `${record.album.pic}?param=64x64`
+                  : coverLog[record.album.mid!] ?? ALBUM_COVER_PLACEHOLDER,
+              title: record.name,
+              artist: record.artists.map(artist => artist.name).join(" / "),
+              duration: record.duration
+            }
+          });
+        }
+      };
+    };
 
     const columns: TableColumn<Song>[] = [
       {
@@ -156,13 +192,15 @@ export default defineComponent({
           sec2Time(duration)
       }
     ];
+
     return {
       columns,
       songs,
       loading,
       resultInfo,
       search,
-      SEARCH_PAGE_SIZE
+      SEARCH_PAGE_SIZE,
+      customRow
     };
   }
 });
