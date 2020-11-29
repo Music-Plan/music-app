@@ -1,14 +1,17 @@
 <template>
   <div id="footer-player" v-if="info.url">
     <a-slider
-      :tip-formatter="sec2Time"
+      :tip-formatter="null"
       v-model:value="current"
       :max="info.duration"
     />
     <div class="wrapper">
       <div class="layout">
         <img class="cover" :src="info.cover" />
-        <span class="title">{{ info.title }}</span>
+        <div class="album-info">
+          <p>{{ info.title }}</p>
+          <p>{{ info.artist }}</p>
+        </div>
       </div>
       <div class="layout">
         <step-backward-filled />
@@ -58,8 +61,7 @@ export default defineComponent({
       info,
       current,
       currentText,
-      durationText,
-      sec2Time
+      durationText
     };
   }
 });
@@ -87,7 +89,7 @@ export default defineComponent({
           height: 48px;
         }
 
-        & > .title {
+        & > .album-info {
           margin-left: 8px;
         }
       }
