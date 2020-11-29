@@ -4,6 +4,8 @@
       :tip-formatter="null"
       v-model:value="current"
       :max="info.duration"
+      @change="dragSlider"
+      @afterChange="dragDone"
     />
     <div class="wrapper">
       <div class="layout">
@@ -15,7 +17,8 @@
       </div>
       <div class="layout">
         <step-backward-filled />
-        <play-circle-filled />
+        <pause-circle-filled v-if="playing" @click="togglePlay" />
+        <play-circle-filled v-else @click="togglePlay" />
         <step-forward-filled />
       </div>
       <div class="layout">
@@ -27,12 +30,20 @@
 
 <script lang="ts">
 import { StoreState } from "@/types/store";
-import { computed, defineComponent, reactive, ref, watch } from "vue";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  watch
+} from "vue";
 import { useStore } from "vuex";
 import {
   PlayCircleFilled,
   StepBackwardFilled,
-  StepForwardFilled
+  StepForwardFilled,
+  PauseCircleFilled
 } from "@/icons";
 import { sec2Time } from "@/utils";
 
@@ -41,7 +52,8 @@ export default defineComponent({
   components: {
     PlayCircleFilled,
     StepBackwardFilled,
-    StepForwardFilled
+    StepForwardFilled,
+    PauseCircleFilled
   },
   setup() {
     const store = useStore<StoreState>();
@@ -50,18 +62,64 @@ export default defineComponent({
     const current = ref(0);
     const currentText = computed(() => sec2Time(current.value));
     const durationText = computed(() => sec2Time(info.value.duration));
+    const audioContext = new AudioContext();
+    let audio: HTMLAudioElement;
+    let track: MediaElementAudioSourceNode;
+    const playing = ref(false);
+    const dragging = ref(false);
+    let timerId: number;
+    const genTimer = () =>
+      setInterval(() => {
+        if (!dragging.value) current.value = Math.floor(audio.currentTime);
+      }, 1000);
     watch(
       () => info.value.url,
       () => {
+        if (!audio) {
+          audio = document.createElement("audio");
+          audio.autoplay = true;
+          audio.controls = false;
+          audio.crossOrigin = "anonymous";
+          track = audioContext.createMediaElementSource(audio);
+          track.connect(audioContext.destination);
+          audioContext.resume();
+          playing.value = true;
+        }
         current.value = 0;
+        audio.src = info.value.url;
+        playing.value = true;
+        timerId = genTimer();
       }
     );
+    const togglePlay = () => {
+      if (playing.value) {
+        audio.pause();
+        playing.value = false;
+        clearInterval(timerId);
+      } else {
+        audio.play();
+        playing.value = true;
+        timerId = genTimer();
+      }
+    };
+    const dragSlider = () => {
+      if (!dragging.value) dragging.value = true;
+    };
+    const dragDone = (value: number) => {
+      current.value = value;
+      audio.currentTime = value;
+      dragging.value = false;
+    };
 
     return {
       info,
       current,
       currentText,
-      durationText
+      durationText,
+      togglePlay,
+      playing,
+      dragSlider,
+      dragDone
     };
   }
 });
@@ -102,6 +160,7 @@ export default defineComponent({
 
           &:nth-child(2) {
             color: #1890ff;
+            cursor: pointer;
           }
         }
       }

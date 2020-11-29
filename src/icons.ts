@@ -7,3 +7,4 @@ export { default as PlayCircleFilled } from "@ant-design/icons-vue/lib/icons/Pla
 export { default as CaretRightOutlined } from "@ant-design/icons-vue/lib/icons/CaretRightOutlined";
 export { default as StepBackwardFilled } from "@ant-design/icons-vue/lib/icons/StepBackwardFilled";
 export { default as StepForwardFilled } from "@ant-design/icons-vue/lib/icons/StepForwardFilled";
+export { default as PauseCircleFilled } from "@ant-design/icons-vue/lib/icons/PauseCircleFilled";
