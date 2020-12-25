@@ -27,6 +27,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch, onMounted, computed } from "vue";
+import { useRouter } from "vue-router";
 import { searchByKeyword } from "@/utils/apis";
 import { StoreState } from "@/types/store";
 import { useRoute } from "vue-router";
@@ -50,6 +51,7 @@ export default defineComponent({
   },
   setup() {
     const store = useStore<StoreState>();
+    const router = useRouter();
     const searchType: SearchType = "artist";
     const resultInfo = ref({
       pageNo: 1,
@@ -81,7 +83,19 @@ export default defineComponent({
                   title: {
                     text: artist.name,
                     onClick() {
-                      return;
+                      router.push({
+                        name: "artistDetail",
+                        params: {
+                          artistName: artist.name,
+                          artistPic: artist.pic
+                        }
+                      });
+                      _setStoreState({
+                        artistDetail: {
+                          id: artist.mid,
+                          platform: "qqMusic"
+                        }
+                      });
                     }
                   },
                   subtitle: `专辑数：${artist.albumSize}   mv数：${artist.mvSize}`
@@ -100,7 +114,19 @@ export default defineComponent({
                     title: {
                       text: artist.name,
                       onClick() {
-                        return;
+                        router.push({
+                          name: "artistDetail",
+                          params: {
+                            artistName: artist.name,
+                            artistPic: artist.pic
+                          }
+                        });
+                        _setStoreState({
+                          artistDetail: {
+                            id: artist.id,
+                            platform: "cloudMusic"
+                          }
+                        });
                       }
                     },
                     subtitle: `专辑数：${artist.albumSize} mv数：${artist.mvSize}`
@@ -108,7 +134,6 @@ export default defineComponent({
               )
             );
           artists.value = expandDims<UniCardData>(tmp, 6);
-          console.log(artists);
           resultInfo.value = {
             pageNo: searchResult.pageNo,
             total: searchResult.qqMusic.total + searchResult.cloudMusic.total
