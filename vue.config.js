@@ -16,6 +16,14 @@ module.exports = {
           '^/api': ''
         }
       },
+      '/qq-stream': {
+        target: 'http://isure.stream.qqmusic.qq.com',
+        ws: true,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/qq-stream': ''
+        }
+      }
     }
   }
 };

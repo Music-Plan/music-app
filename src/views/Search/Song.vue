@@ -72,6 +72,10 @@ export default defineComponent({
           songs.value = searchResult.qqMusic.songs
             .map(song => {
               song.platform = "qqMusic";
+              song.url = song.url?.replace(
+                "http://isure.stream.qqmusic.qq.com",
+                "/qq-stream"
+              );
               return song;
             })
             .concat(
