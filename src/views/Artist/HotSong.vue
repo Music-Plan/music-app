@@ -36,7 +36,7 @@ import { useStore } from "vuex";
 import { message } from "ant-design-vue";
 import { useRouter } from "vue-router";
 import { SEARCH_PAGE_SIZE } from "@/utils/constants";
-import { RightOutlined } from "@ant-design/icons-vue";
+import { RightOutlined } from "@/icons";
 export default defineComponent({
   name: "HotSongTab",
   components: {
