@@ -127,47 +127,47 @@ export default defineComponent({
 
 <style lang="scss">
 #footer-player {
-  & > .wrapper {
+  .wrapper {
     margin: 0.5rem 1rem;
+  }
 
-    & > .layout {
-      display: inline-block;
-      vertical-align: middle;
-      width: 33.333%;
+  .layout {
+    display: inline-block;
+    vertical-align: middle;
+    width: 33.333%;
 
-      &:first-child {
-        & > * {
-          display: inline-block;
-          vertical-align: middle;
-        }
-
-        & > img.cover {
-          border-radius: 8px;
-          width: 48px;
-          height: 48px;
-        }
-
-        & > .album-info {
-          margin-left: 8px;
-        }
+    &:first-child {
+      & > * {
+        display: inline-block;
+        vertical-align: middle;
       }
 
-      &:nth-child(2) {
-        text-align: center;
+      .cover {
+        border-radius: 8px;
+        width: 48px;
+        height: 48px;
+      }
 
-        & > * {
-          font-size: 32px;
+      .album-info {
+        margin-left: 8px;
+      }
+    }
 
-          &:nth-child(2) {
-            color: #1890ff;
-            cursor: pointer;
-          }
+    &:nth-child(2) {
+      text-align: center;
+
+      & > * {
+        font-size: 32px;
+
+        &:nth-child(2) {
+          color: #1890ff;
+          cursor: pointer;
         }
       }
+    }
 
-      &:last-child {
-        text-align: right;
-      }
+    &:last-child {
+      text-align: right;
     }
   }
 }

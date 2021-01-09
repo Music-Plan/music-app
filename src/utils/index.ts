@@ -21,7 +21,7 @@ export function expandDims<T>(arr: T[], col: number): T[][] {
 }
 
 /**
- * 将秒数转发为min:sec格式的字符串
+ * 将秒数转换为min:sec格式的字符串
  * @param duration 时长，单位秒
  */
 export function sec2Time(duration: number) {

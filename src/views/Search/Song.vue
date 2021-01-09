@@ -1,6 +1,7 @@
 <template>
   <div id="search-song">
     <a-table
+      rowKey="id"
       :columns="columns"
       :data-source="songs"
       :pagination="{
@@ -31,13 +32,12 @@ import PlatformTag from "@/components/PlatformTag.vue";
 import { defineComponent, ref, onMounted, watch, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
-import { nanoid } from "nanoid";
 import { TableColumn, Pagination } from "@/types/antd";
 import { StoreState } from "@/types/store";
 import { Song } from "@/types/response/song";
 import { SearchSongResultResponse, SearchType } from "@/types/response/search";
 import { Entity, Platform } from "@/types/response/base";
-import { RecursivePartial, WithKey } from "@/types/base";
+import { RecursivePartial } from "@/types/base";
 import { fetchAlbumDetail, searchByKeyword } from "@/utils/apis";
 import { ALBUM_COVER_PLACEHOLDER, SEARCH_PAGE_SIZE } from "@/utils/constants";
 import { sec2Time, setStoreState } from "@/utils";
@@ -55,7 +55,7 @@ export default defineComponent({
       setStoreState(store, payload);
 
     const searchType: SearchType = "song";
-    const songs = ref<(Song & WithKey)[]>([]);
+    const songs = ref<Song[]>([]);
     const loading = computed(() => store.state.loading);
     const resultInfo = ref({
       pageNo: 1,
@@ -84,9 +84,6 @@ export default defineComponent({
                 return song;
               })
             );
-          songs.value.forEach(song => {
-            song.key = nanoid(8);
-          });
           resultInfo.value = {
             pageNo: searchResult.pageNo,
             total: searchResult.qqMusic.total + searchResult.cloudMusic.total

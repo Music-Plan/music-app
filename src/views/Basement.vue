@@ -19,7 +19,7 @@
     </div>
     <div id="content-side">
       <div class="header">
-        <div class="layout">
+        <div class="wrapper">
           <a-input
             placeholder="搜索音乐"
             v-model:value="keyword"
@@ -101,62 +101,58 @@ export default defineComponent({
   display: flex;
   height: 100vh;
   max-height: 100vh;
+}
 
-  #menu-side {
-    width: 200px;
-    flex-shrink: 0;
-    background-color: rgb(245, 245, 245);
+#menu-side {
+  width: 200px;
+  flex-shrink: 0;
+  background-color: rgb(245, 245, 245);
 
-    ul#side-menu {
-      background-color: transparent;
-    }
+  #side-menu {
+    background-color: transparent;
   }
+}
 
-  #content-side {
-    flex-grow: 1;
-    overflow: hidden;
+#content-side {
+  flex-grow: 1;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  & > .header {
     display: flex;
-    flex-direction: column;
-    position: relative;
+    align-items: center;
+    flex-shrink: 0;
+    padding: 0 1rem;
 
-    & > .header {
-      display: flex;
-      align-items: center;
-      flex-shrink: 0;
-      padding: 0 1rem;
-
-      & > .layout {
-        flex-grow: 1;
-
-        & > .anticon {
-          padding: 0 10px;
-        }
-
-        & > .ant-input-affix-wrapper {
-          width: 300px;
-
-          & > input.ant-input {
-            border-radius: 2rem;
-          }
-        }
-      }
+    & > .wrapper {
+      flex-grow: 1;
     }
 
-    & > .content {
-      flex-grow: 1;
-      overflow-y: scroll;
+    .search-input {
+      width: 300px;
 
-      & > .wrapper {
-        padding: 0 1rem;
+      .ant-input {
+        border-radius: 2rem;
       }
     }
   }
 
-  #menu-side,
-  #content-side {
-    & > .header {
-      height: 4rem;
+  & > .content {
+    flex-grow: 1;
+    overflow-y: scroll;
+
+    & > .wrapper {
+      padding: 0 1rem;
     }
+  }
+}
+
+#menu-side,
+#content-side {
+  & > .header {
+    height: 4rem;
   }
 }
 </style>

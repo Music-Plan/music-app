@@ -2,7 +2,7 @@
   <div id="album-detail-view">
     <div class="placeholder" v-if="loading" />
     <template v-else>
-      <div class="head-wrapper">
+      <div class="header">
         <div class="layout">
           <img
             class="album-cover"
@@ -20,8 +20,13 @@
           </a-button>
         </div>
       </div>
-      <div class="content-wrapper">
-        <a-table :columns="columns" :data-source="songs" :pagination="false">
+      <div class="content">
+        <a-table
+          rowKey="id"
+          :columns="columns"
+          :data-source="songs"
+          :pagination="false"
+        >
           <template v-slot:name="{ text, index }">
             <span class="song-order">{{
               (index + 1).toString().padStart(2, 0)
@@ -52,14 +57,12 @@ import { COVER_SIZE } from "@/utils/constants";
 import { CaretRightOutlined } from "@/icons";
 import dayjs from "dayjs";
 import { Song } from "@/types/response/song";
-import { WithKey } from "@/types/base";
-import { nanoid } from "nanoid";
 import { TableColumn } from "@/types/antd";
 import { message } from "ant-design-vue";
 import { useRouter } from "vue-router";
 
 type AlbumInfo = Omit<Album, "songCount">;
-type AlbumSong = Omit<Song, "album"> & WithKey;
+type AlbumSong = Omit<Song, "album">;
 
 export default defineComponent({
   name: "AlbumDetail",
@@ -93,13 +96,7 @@ export default defineComponent({
         if (platform === "cloudMusic") {
           info.value.pic += `?param=${COVER_SIZE}x${COVER_SIZE}`;
         }
-        songs.value = detail.songs.map(
-          song =>
-            ({
-              key: nanoid(8),
-              ...song
-            } as AlbumSong)
-        );
+        songs.value = detail.songs;
       })
       .finally(() => {
         setStoreState(store, {
@@ -149,14 +146,14 @@ export default defineComponent({
 #album-detail-view {
   margin-top: 1rem;
 
-  & > .placeholder {
+  .placeholder {
     min-height: 200px;
   }
 
-  & > .head-wrapper {
+  .header {
     display: flex;
 
-    & > .layout {
+    .layout {
       &:first-child {
         img.album-cover {
           border-radius: 1rem;
@@ -170,7 +167,7 @@ export default defineComponent({
         align-items: flex-start;
         margin-left: 2rem;
 
-        & > p.album-title {
+        .album-title {
           font-size: 40px;
           font-weight: bold;
         }
@@ -178,7 +175,7 @@ export default defineComponent({
     }
   }
 
-  & > .content-wrapper {
+  .content {
     margin-top: 1rem;
     .ant-table-tbody > tr.ant-table-row > td > span.song-order {
       display: inline-block;

@@ -172,13 +172,13 @@ export default defineComponent({
 #search-album {
   margin: 1rem 0;
 
-  & > .result-wrapper > .row {
+  .result-wrapper > .row {
     display: flex;
     justify-content: space-between;
     margin-bottom: 1rem;
   }
 
-  & > .foot-wrapper {
+  .foot-wrapper {
     display: flex;
     flex-direction: row-reverse;
   }
