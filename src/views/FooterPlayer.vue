@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from "vue";
+import { computed, defineComponent, ref, watch, onMounted } from "vue";
 import store from "@/store";
 import {
   PlayCircleFilled,
@@ -62,18 +62,19 @@ export default defineComponent({
       setInterval(() => {
         if (!dragging.value) current.value = Math.floor(audio.currentTime);
       }, 1000);
+    onMounted(() => {
+      audio = document.createElement("audio");
+      audio.autoplay = true;
+      audio.controls = false;
+      audio.crossOrigin = "anonymous";
+      track = audioContext.createMediaElementSource(audio);
+      track.connect(audioContext.destination);
+    });
     watch(
       () => info.value.url,
       () => {
-        if (!audio) {
-          audio = document.createElement("audio");
-          audio.autoplay = true;
-          audio.controls = false;
-          audio.crossOrigin = "anonymous";
-          track = audioContext.createMediaElementSource(audio);
-          track.connect(audioContext.destination);
+        if (audioContext.state === "suspended") {
           audioContext.resume();
-          playing.value = true;
         }
         current.value = 0;
         audio.src = info.value.url;
