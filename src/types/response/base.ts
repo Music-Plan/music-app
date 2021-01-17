@@ -15,4 +15,4 @@ export interface Entity {
   alias?: string[];
 }
 
-export type Platform = "qqMusic" | "cloudMusic";
+export type Platform = "qq" | "netease";

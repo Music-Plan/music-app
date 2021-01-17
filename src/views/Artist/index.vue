@@ -13,7 +13,12 @@
       <a-tab-pane key="song" tab="歌曲">
         <all-song-tab />
       </a-tab-pane>
-      <a-tab-pane key="album" tab="专辑"> </a-tab-pane>
+      <a-tab-pane key="album" tab="专辑">
+        <album-tab />
+      </a-tab-pane>
+      <a-tab-pane key="detail" tab="详情">
+        <detail-tab />
+      </a-tab-pane>
     </a-tabs>
   </section>
 </template>
@@ -23,11 +28,15 @@ import { defineComponent, ref } from "vue";
 import { useRoute } from "vue-router";
 import HotSongTab from "./HotSong.vue";
 import AllSongTab from "./AllSong.vue";
+import DetailTab from "./ArtistDetail.vue";
+import AlbumTab from "./ArtistAlbum.vue";
 export default defineComponent({
   name: "artistDetail",
   components: {
     HotSongTab,
-    AllSongTab
+    AllSongTab,
+    DetailTab,
+    AlbumTab
   },
   setup() {
     const activeKey = ref("info");

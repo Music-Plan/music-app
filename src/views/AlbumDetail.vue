@@ -90,7 +90,7 @@ export default defineComponent({
         info.value.publishTime = dayjs(info.value.publishTime).format(
           "YYYY-MM-DD"
         );
-        if (platform === "cloudMusic") {
+        if (platform === "netease") {
           info.value.pic += `?param=${COVER_SIZE}x${COVER_SIZE}`;
         }
         songs.value = detail.songs.map(
