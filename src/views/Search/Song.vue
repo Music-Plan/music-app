@@ -71,7 +71,7 @@ export default defineComponent({
           const searchResult = (res.data as SearchSongResultResponse).data;
           songs.value = searchResult.qqMusic.songs
             .map(song => {
-              song.platform = "qqMusic";
+              song.platform = "qq";
               song.url = song.url?.replace(
                 "http://isure.stream.qqmusic.qq.com",
                 "/qq-stream"
@@ -80,7 +80,7 @@ export default defineComponent({
             })
             .concat(
               searchResult.cloudMusic.songs.map(song => {
-                song.platform = "cloudMusic";
+                song.platform = "netease";
                 return song;
               })
             );
@@ -135,8 +135,8 @@ export default defineComponent({
       return {
         dblclick() {
           // qq音乐没有专辑封面数据，因此需要额外请求
-          if (record.platform === "qqMusic" && !coverLog[record.album.mid!]) {
-            fetchAlbumDetail(record.album.mid!, "qqMusic").then(res => {
+          if (record.platform === "qq" && !coverLog[record.album.mid!]) {
+            fetchAlbumDetail(record.album.mid!, "qq").then(res => {
               const pic = (res.data as AlbumDetailResponse).data.info.pic;
               // 将返回的数据保存在log内，避免重复请求
               coverLog[record.album.mid!] = pic;
@@ -151,7 +151,7 @@ export default defineComponent({
             playing: {
               url: record.url,
               cover:
-                record.platform === "cloudMusic"
+                record.platform === "netease"
                   ? `${record.album.pic}?param=64x64`
                   : coverLog[record.album.mid!] ?? ALBUM_COVER_PLACEHOLDER,
               title: record.name,

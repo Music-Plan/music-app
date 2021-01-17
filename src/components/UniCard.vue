@@ -60,8 +60,8 @@ export default defineComponent({
   },
   setup(props) {
     const platformClass = {
-      "qq-music": props.data.platform === "qqMusic",
-      "cloud-music": props.data.platform === "cloudMusic"
+      "qq-music": props.data.platform === "qq",
+      "cloud-music": props.data.platform === "netease"
     };
 
     const coverStyle = {
