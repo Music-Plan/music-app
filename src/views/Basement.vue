@@ -50,8 +50,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
-import { useStore } from "vuex";
-import { StoreState } from "@/types/store";
+import store from "@/store";
 import { SearchOutlined, HomeOutlined, LikeOutlined } from "@/icons";
 import { setStoreState } from "@/utils";
 import FooterPlayer from "@/views/FooterPlayer.vue";
@@ -66,7 +65,6 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter();
-    const store = useStore<StoreState>();
     const currentKeys = ref(["search"]);
 
     const keyword = ref("");
@@ -76,7 +74,7 @@ export default defineComponent({
         name: "search",
         query: { keyword: keyword.value }
       });
-      setStoreState(store, {
+      setStoreState({
         search: {
           keywordUpdated: true,
           keyword: keyword.value

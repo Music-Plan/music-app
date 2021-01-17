@@ -46,10 +46,8 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from "vue";
-import { useStore } from "vuex";
-import { Entity, Platform } from "@/types/response/base";
-import { StoreState } from "@/types/store";
+import { computed, defineComponent, ref } from "vue";
+import store from "@/store";
 import { fetchAlbumDetail } from "@/utils/apis";
 import { Album, AlbumDetailResponse } from "@/types/response/album";
 import { sec2Time, setStoreState } from "@/utils";
@@ -70,7 +68,6 @@ export default defineComponent({
     CaretRightOutlined
   },
   setup() {
-    const store = useStore<StoreState>();
     const router = useRouter();
 
     const info = ref<AlbumInfo>();
@@ -99,13 +96,9 @@ export default defineComponent({
         songs.value = detail.songs;
       })
       .finally(() => {
-        setStoreState(store, {
-          loading: false
-        });
+        setStoreState({ loading: false });
       });
-    setStoreState(store, {
-      loading: true
-    });
+    setStoreState({ loading: true });
 
     const columns: TableColumn<Song>[] = [
       {

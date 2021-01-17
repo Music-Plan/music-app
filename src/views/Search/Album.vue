@@ -28,16 +28,12 @@
 <script lang="ts">
 import { useRouter } from "vue-router";
 import { defineComponent, ref, watch, onMounted, computed } from "vue";
-import { useStore } from "vuex";
+import store from "@/store";
 import { nanoid } from "nanoid";
-import dayjs from "dayjs";
 import UniCard from "@/components/UniCard.vue";
-import { StoreState } from "@/types/store";
 import { SearchAlbumResultResponse, SearchType } from "@/types/response/search";
 import { UniCardData } from "@/types/components/uniCard";
-import { TableColumn, Pagination } from "@/types/antd";
-import { Entity, Platform } from "@/types/response/base";
-import { RecursivePartial } from "@/types/base";
+import { Pagination } from "@/types/antd";
 import { searchByKeyword } from "@/utils/apis";
 import { SEARCH_PAGE_SIZE, COVER_SIZE } from "@/utils/constants";
 import { expandDims, setStoreState } from "@/utils";
@@ -49,10 +45,6 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter();
-    const store = useStore<StoreState>();
-
-    const _setStoreState = (payload: RecursivePartial<StoreState>) =>
-      setStoreState(store, payload);
 
     const searchType: SearchType = "album";
     const albums = ref<UniCardData[][]>();
@@ -85,7 +77,7 @@ export default defineComponent({
                       router.push({
                         name: "albumDetail"
                       });
-                      _setStoreState({
+                      setStoreState({
                         albumDetail: {
                           id: album.mid,
                           platform: "qq"
@@ -112,7 +104,7 @@ export default defineComponent({
                         router.push({
                           name: "albumDetail"
                         });
-                        _setStoreState({
+                        setStoreState({
                           albumDetail: {
                             id: album.id,
                             platform: "netease"
@@ -131,16 +123,14 @@ export default defineComponent({
           };
         })
         .finally(() => {
-          _setStoreState({
+          setStoreState({
             loading: false,
             search: {
               keywordUpdated: false
             }
           });
         });
-      _setStoreState({
-        loading: true
-      });
+      setStoreState({ loading: true });
     };
     watch(
       () => store.state.search.keywordUpdated,

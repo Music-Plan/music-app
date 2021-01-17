@@ -14,8 +14,7 @@ import { computed, defineComponent } from "vue";
 import SongTab from "./Song.vue";
 import AlbumTab from "./Album.vue";
 import { setStoreState } from "@/utils";
-import { useStore } from "vuex";
-import { StoreState } from "@/types/store";
+import store from "@/store";
 
 export default defineComponent({
   name: "SearchResult",
@@ -24,11 +23,9 @@ export default defineComponent({
     AlbumTab
   },
   setup() {
-    const store = useStore<StoreState>();
-
     const activeKey = computed(() => store.state.search.activeKey);
     const setActiveTab = (key: string) => {
-      setStoreState(store, {
+      setStoreState({
         search: {
           activeKey: key
         }

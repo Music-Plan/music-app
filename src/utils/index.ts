@@ -1,6 +1,6 @@
 import { RecursivePartial } from "@/types/base";
 import { StoreState } from "@/types/store";
-import { Store } from "vuex";
+import store from "@/store";
 
 /**
  * @description 将一维数组变成二维Grid，每个row的length都相等，最后一行空缺的部分值为undefined
@@ -30,9 +30,6 @@ export function sec2Time(duration: number) {
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
 
-export function setStoreState(
-  store: Store<StoreState>,
-  payload: RecursivePartial<StoreState>
-) {
+export function setStoreState(payload: RecursivePartial<StoreState>) {
   store.commit("setState", payload);
 }

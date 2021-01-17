@@ -29,16 +29,8 @@
 </template>
 
 <script lang="ts">
-import { StoreState } from "@/types/store";
-import {
-  computed,
-  defineComponent,
-  onMounted,
-  reactive,
-  ref,
-  watch
-} from "vue";
-import { useStore } from "vuex";
+import { computed, defineComponent, ref, watch } from "vue";
+import store from "@/store";
 import {
   PlayCircleFilled,
   StepBackwardFilled,
@@ -56,8 +48,6 @@ export default defineComponent({
     PauseCircleFilled
   },
   setup() {
-    const store = useStore<StoreState>();
-
     const info = computed(() => store.state.playing);
     const current = ref(0);
     const currentText = computed(() => sec2Time(current.value));

@@ -31,13 +31,11 @@
 import PlatformTag from "@/components/PlatformTag.vue";
 import { defineComponent, ref, onMounted, watch, computed } from "vue";
 import { useRoute } from "vue-router";
-import { useStore } from "vuex";
+import store from "@/store";
 import { TableColumn, Pagination } from "@/types/antd";
-import { StoreState } from "@/types/store";
 import { Song } from "@/types/response/song";
 import { SearchSongResultResponse, SearchType } from "@/types/response/search";
-import { Entity, Platform } from "@/types/response/base";
-import { RecursivePartial } from "@/types/base";
+import { Entity } from "@/types/response/base";
 import { fetchAlbumDetail, searchByKeyword } from "@/utils/apis";
 import { ALBUM_COVER_PLACEHOLDER, SEARCH_PAGE_SIZE } from "@/utils/constants";
 import { sec2Time, setStoreState } from "@/utils";
@@ -50,9 +48,6 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
-    const store = useStore<StoreState>();
-    const _setStoreState = (payload: RecursivePartial<StoreState>) =>
-      setStoreState(store, payload);
 
     const searchType: SearchType = "song";
     const songs = ref<Song[]>([]);
@@ -90,16 +85,14 @@ export default defineComponent({
           };
         })
         .finally(() => {
-          _setStoreState({
+          setStoreState({
             loading: false,
             search: {
               keywordUpdated: false
             }
           });
         });
-      _setStoreState({
-        loading: true
-      });
+      setStoreState({ loading: true });
     };
     watch(
       () => store.state.search.keywordUpdated,
@@ -119,7 +112,7 @@ export default defineComponent({
     // 从url读取数据进行搜索
     onMounted(() => {
       if (route.query.keyword) {
-        _setStoreState({
+        setStoreState({
           search: {
             keywordUpdated: true,
             keyword: route.query.keyword as string
@@ -131,7 +124,7 @@ export default defineComponent({
     const coverLog: {
       [mid: string]: string;
     } = {};
-    const customRow = (record: Song, index: number) => {
+    const customRow = (record: Song) => {
       return {
         dblclick() {
           // qq音乐没有专辑封面数据，因此需要额外请求
@@ -140,14 +133,14 @@ export default defineComponent({
               const pic = (res.data as AlbumDetailResponse).data.info.pic;
               // 将返回的数据保存在log内，避免重复请求
               coverLog[record.album.mid!] = pic;
-              _setStoreState({
+              setStoreState({
                 playing: {
                   cover: pic
                 }
               });
             });
           }
-          _setStoreState({
+          setStoreState({
             playing: {
               url: record.url,
               cover:
