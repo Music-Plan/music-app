@@ -69,12 +69,12 @@ export default defineComponent({
           const searchResult = (res.data as SearchSongResultResponse).data;
           songs.value = searchResult.qqMusic.songs
             .map(song => {
-              song.platform = "qqMusic";
+              song.platform = "qq";
               return song;
             })
             .concat(
               searchResult.cloudMusic.songs.map(song => {
-                song.platform = "cloudMusic";
+                song.platform = "netease";
                 return song;
               })
             );

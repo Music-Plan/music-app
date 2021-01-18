@@ -78,7 +78,7 @@ export default defineComponent({
                     src: album.pic,
                     size: COVER_SIZE
                   },
-                  platform: "qqMusic",
+                  platform: "qq",
                   title: {
                     text: album.name,
                     onClick() {
@@ -88,7 +88,7 @@ export default defineComponent({
                       _setStoreState({
                         albumDetail: {
                           id: album.mid,
-                          platform: "qqMusic"
+                          platform: "qq"
                         }
                       });
                     }
@@ -105,7 +105,7 @@ export default defineComponent({
                       src: `${album.pic}?param=${COVER_SIZE}x${COVER_SIZE}`,
                       size: COVER_SIZE
                     },
-                    platform: "cloudMusic",
+                    platform: "netease",
                     title: {
                       text: album.name,
                       onClick() {
@@ -115,7 +115,7 @@ export default defineComponent({
                         _setStoreState({
                           albumDetail: {
                             id: album.id,
-                            platform: "cloudMusic"
+                            platform: "netease"
                           }
                         });
                       }

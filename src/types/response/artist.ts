@@ -30,4 +30,24 @@ export interface HotSongResult {
   pageSize: number;
 }
 
+export interface ArtistDetail {
+  desc: string;
+}
+
+export interface ArtistAlbum extends Entity {
+  pic: string;
+  publishTime: string;
+  artist: Entity;
+  songCount: number;
+  platform: Platform;
+}
+
+export interface ArtistAlbumResult {
+  albums: Omit<ArtistAlbum, "artist">[];
+  total: number;
+  more?: boolean;
+}
+
 export type HotSongResponse = BaseResponse<HotSongResult>;
+export type ArtistDetailResponse = BaseResponse<ArtistDetail>;
+export type ArtistAlbumResponse = BaseResponse<ArtistAlbumResult>;

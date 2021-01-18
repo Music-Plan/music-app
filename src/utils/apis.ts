@@ -25,3 +25,18 @@ export function getHotSongs(
     `/artist/${id}/songs?platform=${platform}&pageNo=${pageNo}`
   );
 }
+
+export function getArtistDetail(id: number | string, platform: Platform) {
+  return instance.get(`/artist/${id}/detail?platform=${platform}`);
+}
+
+export function getArtistAlbums(
+  id: number | string,
+  platform: Platform,
+  pageNo = 1,
+  pageSize = 10
+) {
+  return instance.get(
+    `/artist/${id}/album?platform=${platform}&pageNo=${pageNo}&pageSize=${pageSize}`
+  );
+}
