@@ -47,19 +47,17 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
+import store from "@/store";
 import {
   HotSongResponse,
   ArtistAlbumResponse,
   HotSong
 } from "@/types/response/artist";
 import { TableColumn, Pagination } from "@/types/antd";
-
 import { getArtistAlbums, getHotSongs } from "@/utils/apis";
-import { StoreState } from "@/types/store";
 import { sec2Time, setStoreState, expandDims } from "@/utils";
 import { Entity, Platform } from "@/types/response/base";
 import { RecursivePartial, WithKey } from "@/types/base";
-import { useStore } from "vuex";
 import { message } from "ant-design-vue";
 import dayjs from "dayjs";
 import { useRouter } from "vue-router";
@@ -76,13 +74,10 @@ export default defineComponent({
     UniCard
   },
   setup(props, { emit }) {
-    const store = useStore<StoreState>();
     const router = useRouter();
     const albums = ref<UniCardData[][]>();
     const hotSongs = ref<(HotSong & WithKey)[]>([]);
     const loading = computed(() => store.state.loading);
-    const _setStoreState = (payload: RecursivePartial<StoreState>) =>
-      setStoreState(store, payload);
     const { id, platform } = store.state.artistDetail;
     if (!id || !platform) {
       message.info("没有数据，回到首页");
@@ -92,7 +87,6 @@ export default defineComponent({
     getArtistAlbums(id!, platform!, 1, 6)
       .then(res => {
         const data = (res.data as ArtistAlbumResponse).data;
-        console.log(data);
         const tmp = data.albums.map(
           album =>
             ({
@@ -108,7 +102,7 @@ export default defineComponent({
                   router.push({
                     name: "albumDetail"
                   });
-                  _setStoreState({
+                  setStoreState({
                     albumDetail: {
                       id: album.mid,
                       platform: platform
@@ -122,14 +116,14 @@ export default defineComponent({
         albums.value = expandDims<UniCardData>(tmp, 6);
       })
       .finally(() => {
-        _setStoreState({
+        setStoreState({
           loading: false,
           search: {
             keywordUpdated: false
           }
         });
       });
-    _setStoreState({
+    setStoreState({
       loading: true
     });
 
@@ -146,11 +140,11 @@ export default defineComponent({
         }
       })
       .finally(() => {
-        _setStoreState({
+        setStoreState({
           loading: false
         });
       });
-    _setStoreState({
+    setStoreState({
       loading: true
     });
     const columns: TableColumn<HotSong>[] = [

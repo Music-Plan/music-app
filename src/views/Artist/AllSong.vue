@@ -23,26 +23,23 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
+import store from "@/store";
 import { TableColumn, Pagination } from "@/types/antd";
 import { getHotSongs } from "@/utils/apis";
 import { sec2Time, setStoreState } from "@/utils";
 import { useStore } from "vuex";
 import { message } from "ant-design-vue";
 import { useRouter } from "vue-router";
-import { StoreState } from "@/types/store";
-import { RecursivePartial, WithKey } from "@/types/base";
+import { WithKey } from "@/types/base";
 import { Entity, Platform } from "@/types/response/base";
 import { SEARCH_PAGE_SIZE } from "@/utils/constants";
 import { HotSong, HotSongResponse } from "@/types/response/artist";
 export default defineComponent({
   name: "allSongTab",
   setup() {
-    const store = useStore<StoreState>();
     const songs = ref<(HotSong & WithKey)[]>([]);
     const loading = computed(() => store.state.loading);
     const router = useRouter();
-    const _setStoreState = (payload: RecursivePartial<StoreState>) =>
-      setStoreState(store, payload);
     const { id, platform } = store.state.artistDetail;
     if (!id || !platform) {
       message.info("没有数据，回到首页");
@@ -68,11 +65,11 @@ export default defineComponent({
           };
         })
         .finally(() => {
-          _setStoreState({
+          setStoreState({
             loading: false
           });
         });
-      _setStoreState({
+      setStoreState({
         loading: true
       });
     };

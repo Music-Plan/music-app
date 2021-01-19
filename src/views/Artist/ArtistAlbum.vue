@@ -29,13 +29,11 @@
 import { defineComponent, ref, computed } from "vue";
 import { Pagination } from "@/types/antd";
 import { getArtistAlbums } from "@/utils/apis";
-import { useStore } from "vuex";
+import store from "@/store";
 import { message } from "ant-design-vue";
 import { setStoreState, expandDims } from "@/utils";
 import { useRouter } from "vue-router";
-import { StoreState } from "@/types/store";
 import dayjs from "dayjs";
-import { RecursivePartial } from "@/types/base";
 import UniCard from "@/components/UniCard.vue";
 import { UniCardData } from "@/types/components/uniCard";
 import { Entity, Platform } from "@/types/response/base";
@@ -47,12 +45,9 @@ export default defineComponent({
     UniCard
   },
   setup() {
-    const store = useStore<StoreState>();
     const albums = ref<UniCardData[][]>();
     const loading = computed(() => store.state.loading);
     const router = useRouter();
-    const _setStoreState = (payload: RecursivePartial<StoreState>) =>
-      setStoreState(store, payload);
     const { id, platform } = store.state.artistDetail;
     if (!id || !platform) {
       message.info("没有数据，回到首页");
@@ -80,7 +75,7 @@ export default defineComponent({
                   router.push({
                     name: "albumDetail"
                   });
-                  _setStoreState({
+                  setStoreState({
                     albumDetail: {
                       id: album.mid,
                       platform: platform
@@ -98,14 +93,14 @@ export default defineComponent({
         };
       })
       .finally(() => {
-        _setStoreState({
+        setStoreState({
           loading: false,
           search: {
             keywordUpdated: false
           }
         });
       });
-    _setStoreState({
+    setStoreState({
       loading: true
     });
 

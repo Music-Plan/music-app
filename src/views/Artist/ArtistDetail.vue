@@ -6,10 +6,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from "vue";
-import { StoreState } from "@/types/store";
-import { useStore } from "vuex";
+import store from "@/store";
 import { setStoreState } from "@/utils";
-import { RecursivePartial } from "@/types/base";
 import { getArtistDetail } from "@/utils/apis";
 import { message } from "ant-design-vue";
 import { useRouter } from "vue-router";
@@ -18,12 +16,9 @@ import { ArtistDetailResponse } from "@/types/response/artist";
 export default defineComponent({
   name: "ArtistDetailTab",
   setup() {
-    const store = useStore<StoreState>();
     const loading = computed(() => store.state.loading);
     const router = useRouter();
     const artistDetail = ref("");
-    const _setStoreState = (payload: RecursivePartial<StoreState>) =>
-      setStoreState(store, payload);
     const { id, platform } = store.state.artistDetail;
     if (!id || !platform) {
       message.info("没有数据，回到首页");

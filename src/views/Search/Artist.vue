@@ -28,11 +28,10 @@
 <script lang="ts">
 import { defineComponent, ref, watch, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
+import store from "@/store";
 import { searchByKeyword } from "@/utils/apis";
-import { StoreState } from "@/types/store";
 import { useRoute } from "vue-router";
-import { useStore } from "vuex";
-import { RecursivePartial, WithKey } from "@/types/base";
+import { WithKey } from "@/types/base";
 import { Pagination } from "@/types/antd";
 import UniCard from "@/components/UniCard.vue";
 import { UniCardData } from "@/types/components/uniCard";
@@ -50,15 +49,12 @@ export default defineComponent({
     UniCard
   },
   setup() {
-    const store = useStore<StoreState>();
     const router = useRouter();
     const searchType: SearchType = "artist";
     const resultInfo = ref({
       pageNo: 1,
       total: 0
     });
-    const _setStoreState = (payload: RecursivePartial<StoreState>) =>
-      setStoreState(store, payload);
     const artists = ref<UniCardData[][]>();
     const loading = computed(() => store.state.loading);
     const search = (pagination: Partial<Pagination>) => {
@@ -69,7 +65,6 @@ export default defineComponent({
       )
         .then(res => {
           const searchResult = (res.data as SearchArtistResultResponse).data;
-          console.log(searchResult);
           const tmp = searchResult.qqMusic.artists
             .map(
               artist =>
@@ -90,7 +85,7 @@ export default defineComponent({
                           artistPic: artist.pic
                         }
                       });
-                      _setStoreState({
+                      setStoreState({
                         artistDetail: {
                           id: artist.mid,
                           platform: "qq"
@@ -121,7 +116,7 @@ export default defineComponent({
                             artistPic: artist.pic
                           }
                         });
-                        _setStoreState({
+                        setStoreState({
                           artistDetail: {
                             id: artist.id,
                             platform: "netease"
@@ -140,14 +135,14 @@ export default defineComponent({
           };
         })
         .finally(() => {
-          _setStoreState({
+          setStoreState({
             loading: false,
             search: {
               keywordUpdated: false
             }
           });
         });
-      _setStoreState({
+      setStoreState({
         loading: true
       });
     };
