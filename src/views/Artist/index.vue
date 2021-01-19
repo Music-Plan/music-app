@@ -25,11 +25,11 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import { useRoute } from "vue-router";
-import HotSongTab from "./HotSong.vue";
+import AlbumTab from "./ArtistAlbum.vue";
 import AllSongTab from "./AllSong.vue";
 import DetailTab from "./ArtistDetail.vue";
-import AlbumTab from "./ArtistAlbum.vue";
+import HotSongTab from "./HotSong.vue";
+import { useRoute } from "vue-router";
 export default defineComponent({
   name: "artistDetail",
   components: {

@@ -26,17 +26,17 @@
 </template>
 
 <script lang="ts">
-import { useRouter } from "vue-router";
-import { defineComponent, ref, watch, onMounted, computed } from "vue";
-import store from "@/store";
-import { nanoid } from "nanoid";
-import UniCard from "@/components/UniCard.vue";
+import { COVER_SIZE, SEARCH_PAGE_SIZE } from "@/utils/constants";
 import { SearchAlbumResultResponse, SearchType } from "@/types/response/search";
-import { UniCardData } from "@/types/components/uniCard";
-import { Pagination } from "@/types/antd";
-import { searchByKeyword } from "@/utils/apis";
-import { SEARCH_PAGE_SIZE, COVER_SIZE } from "@/utils/constants";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import { expandDims, setStoreState } from "@/utils";
+import { Pagination } from "@/types/antd";
+import UniCard from "@/components/UniCard.vue";
+import { UniCardData } from "@/types/components/uniCard";
+import { nanoid } from "nanoid";
+import { searchByKeyword } from "@/utils/apis";
+import store from "@/store";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "SearchAlbumTab",

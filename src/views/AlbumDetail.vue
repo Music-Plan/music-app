@@ -46,17 +46,17 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from "vue";
-import store from "@/store";
-import { fetchAlbumDetail } from "@/utils/apis";
 import { Album, AlbumDetailResponse } from "@/types/response/album";
+import { computed, defineComponent, ref } from "vue";
 import { sec2Time, setStoreState } from "@/utils";
 import { COVER_SIZE } from "@/utils/constants";
 import { CaretRightOutlined } from "@/icons";
-import dayjs from "dayjs";
 import { Song } from "@/types/response/song";
 import { TableColumn } from "@/types/antd";
+import dayjs from "dayjs";
+import { fetchAlbumDetail } from "@/utils/apis";
 import { message } from "ant-design-vue";
+import store from "@/store";
 import { useRouter } from "vue-router";
 
 type AlbumInfo = Omit<Album, "songCount">;

@@ -44,9 +44,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive } from "vue";
-import { UniCardData } from "@/types/components/uniCard";
+import { PropType, defineComponent, reactive } from "vue";
 import { PlayCircleFilled } from "@/icons";
+import { UniCardData } from "@/types/components/uniCard";
 export default defineComponent({
   name: "UniversialCard",
   props: {

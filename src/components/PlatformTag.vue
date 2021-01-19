@@ -4,8 +4,8 @@
 </template>
 
 <script lang="ts">
+import { PropType, defineComponent } from "vue";
 import { Platform } from "@/types/response/base";
-import { defineComponent, PropType } from "vue";
 export default defineComponent({
   name: "PlatformCard",
   props: {

@@ -1,5 +1,5 @@
 import { SongQuality } from "./song";
-import { Entity, Platform, BaseResponse } from "./base";
+import { BaseResponse, Entity, Platform } from "./base";
 
 export interface Artist extends Entity {
   pic: string;

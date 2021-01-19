@@ -48,12 +48,12 @@
 </template>
 
 <script lang="ts">
+import { HomeOutlined, LikeOutlined, SearchOutlined } from "@/icons";
 import { computed, defineComponent, ref } from "vue";
-import { useRouter } from "vue-router";
-import store from "@/store";
-import { SearchOutlined, HomeOutlined, LikeOutlined } from "@/icons";
-import { setStoreState } from "@/utils";
 import FooterPlayer from "@/views/FooterPlayer.vue";
+import { setStoreState } from "@/utils";
+import store from "@/store";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "Basement",

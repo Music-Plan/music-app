@@ -14,9 +14,9 @@
 
 <script lang="ts">
 import { computed, defineComponent } from "vue";
-import SongTab from "./Song.vue";
 import AlbumTab from "./Album.vue";
 import ArtistTab from "./Artist.vue";
+import SongTab from "./Song.vue";
 import { setStoreState } from "@/utils";
 import store from "@/store";
 

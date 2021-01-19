@@ -3,15 +3,15 @@ import App from "./App.vue";
 import router from "./router";
 import store from "./store";
 import {
-  Menu,
-  Input,
-  Tabs,
-  Table,
-  Tag,
-  Pagination,
-  Spin,
   Button,
-  Slider
+  Input,
+  Menu,
+  Pagination,
+  Slider,
+  Spin,
+  Table,
+  Tabs,
+  Tag
 } from "ant-design-vue";
 
 const app = createApp(App);

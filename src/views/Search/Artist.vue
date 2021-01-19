@@ -26,22 +26,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch, onMounted, computed } from "vue";
-import { useRouter } from "vue-router";
-import store from "@/store";
-import { searchByKeyword } from "@/utils/apis";
-import { useRoute } from "vue-router";
-import { WithKey } from "@/types/base";
-import { Pagination } from "@/types/antd";
-import UniCard from "@/components/UniCard.vue";
-import { UniCardData } from "@/types/components/uniCard";
+import { COVER_SIZE, SEARCH_PAGE_SIZE } from "@/utils/constants";
 import {
   SearchArtistResultResponse,
   SearchType
 } from "@/types/response/search";
-import { SEARCH_PAGE_SIZE, COVER_SIZE } from "@/utils/constants";
-import { setStoreState, expandDims } from "@/utils";
-import { Artist } from "@/types/response/artist";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import { expandDims, setStoreState } from "@/utils";
+import { Pagination } from "@/types/antd";
+import UniCard from "@/components/UniCard.vue";
+import { UniCardData } from "@/types/components/uniCard";
+import { searchByKeyword } from "@/utils/apis";
+import store from "@/store";
+import { useRouter } from "vue-router";
 
 export default defineComponent({
   name: "SearchArtistTab",

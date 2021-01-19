@@ -29,15 +29,15 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch, onMounted } from "vue";
-import store from "@/store";
 import {
+  PauseCircleFilled,
   PlayCircleFilled,
   StepBackwardFilled,
-  StepForwardFilled,
-  PauseCircleFilled
+  StepForwardFilled
 } from "@/icons";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
 import { sec2Time } from "@/utils";
+import store from "@/store";
 
 export default defineComponent({
   name: "FooterPlayer",

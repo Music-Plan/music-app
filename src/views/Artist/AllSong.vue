@@ -22,23 +22,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
-import store from "@/store";
-import { TableColumn, Pagination } from "@/types/antd";
-import { getHotSongs } from "@/utils/apis";
-import { sec2Time, setStoreState } from "@/utils";
-import { useStore } from "vuex";
-import { message } from "ant-design-vue";
-import { useRouter } from "vue-router";
-import { WithKey } from "@/types/base";
-import { Entity, Platform } from "@/types/response/base";
-import { SEARCH_PAGE_SIZE } from "@/utils/constants";
 import { HotSong, HotSongResponse } from "@/types/response/artist";
+import { Pagination, TableColumn } from "@/types/antd";
+import { defineComponent, ref } from "vue";
+import { sec2Time, setStoreState } from "@/utils";
+import { Entity } from "@/types/response/base";
+import { SEARCH_PAGE_SIZE } from "@/utils/constants";
+import { WithKey } from "@/types/base";
+import { getHotSongs } from "@/utils/apis";
+import { message } from "ant-design-vue";
+import store from "@/store";
+import { useRouter } from "vue-router";
 export default defineComponent({
   name: "allSongTab",
   setup() {
     const songs = ref<(HotSong & WithKey)[]>([]);
-    const loading = computed(() => store.state.loading);
     const router = useRouter();
     const { id, platform } = store.state.artistDetail;
     if (!id || !platform) {
@@ -61,7 +59,7 @@ export default defineComponent({
           });
           resultInfo.value = {
             total: songResult.total,
-            pageNo: pageNo
+            pageNo
           };
         })
         .finally(() => {

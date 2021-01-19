@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
+import { RouteRecordRaw, createRouter, createWebHashHistory } from "vue-router";
 import Basement from "../views/Basement.vue";
 import SearchResult from "../views/Search/index.vue";
 import AlbumDetail from "../views/AlbumDetail.vue";

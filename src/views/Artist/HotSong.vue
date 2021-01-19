@@ -46,27 +46,25 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
-import store from "@/store";
 import {
-  HotSongResponse,
   ArtistAlbumResponse,
-  HotSong
+  HotSong,
+  HotSongResponse
 } from "@/types/response/artist";
-import { TableColumn, Pagination } from "@/types/antd";
+import { defineComponent, ref } from "vue";
+import { expandDims, sec2Time, setStoreState } from "@/utils";
 import { getArtistAlbums, getHotSongs } from "@/utils/apis";
-import { sec2Time, setStoreState, expandDims } from "@/utils";
-import { Entity, Platform } from "@/types/response/base";
-import { RecursivePartial, WithKey } from "@/types/base";
-import { message } from "ant-design-vue";
-import dayjs from "dayjs";
-import { useRouter } from "vue-router";
-import { SEARCH_PAGE_SIZE } from "@/utils/constants";
-import { RightOutlined } from "@/icons";
 import { COVER_SIZE } from "@/utils/constants";
-import { useRoute } from "vue-router";
+import { Entity } from "@/types/response/base";
+import { RightOutlined } from "@/icons";
+import { TableColumn } from "@/types/antd";
 import UniCard from "@/components/UniCard.vue";
 import { UniCardData } from "@/types/components/uniCard";
+import { WithKey } from "@/types/base";
+import dayjs from "dayjs";
+import { message } from "ant-design-vue";
+import store from "@/store";
+import { useRouter } from "vue-router";
 export default defineComponent({
   name: "HotSongTab",
   components: {
@@ -77,7 +75,6 @@ export default defineComponent({
     const router = useRouter();
     const albums = ref<UniCardData[][]>();
     const hotSongs = ref<(HotSong & WithKey)[]>([]);
-    const loading = computed(() => store.state.loading);
     const { id, platform } = store.state.artistDetail;
     if (!id || !platform) {
       message.info("没有数据，回到首页");
@@ -95,7 +92,7 @@ export default defineComponent({
                 src: album.pic,
                 size: COVER_SIZE
               },
-              platform: platform,
+              platform,
               title: {
                 text: album.name,
                 onClick() {
@@ -105,7 +102,7 @@ export default defineComponent({
                   setStoreState({
                     albumDetail: {
                       id: album.mid,
-                      platform: platform
+                      platform
                     }
                   });
                 }

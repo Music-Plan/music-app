@@ -26,19 +26,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
-import { Pagination } from "@/types/antd";
-import { getArtistAlbums } from "@/utils/apis";
-import store from "@/store";
-import { message } from "ant-design-vue";
-import { setStoreState, expandDims } from "@/utils";
-import { useRouter } from "vue-router";
-import dayjs from "dayjs";
+import { COVER_SIZE, SEARCH_PAGE_SIZE } from "@/utils/constants";
+import { computed, defineComponent, ref } from "vue";
+import { expandDims, setStoreState } from "@/utils";
+import { ArtistAlbumResponse } from "@/types/response/artist";
 import UniCard from "@/components/UniCard.vue";
 import { UniCardData } from "@/types/components/uniCard";
-import { Entity, Platform } from "@/types/response/base";
-import { COVER_SIZE, SEARCH_PAGE_SIZE } from "@/utils/constants";
-import { ArtistAlbumResponse, ArtistAlbum } from "@/types/response/artist";
+import dayjs from "dayjs";
+import { getArtistAlbums } from "@/utils/apis";
+import { message } from "ant-design-vue";
+import store from "@/store";
+import { useRouter } from "vue-router";
 export default defineComponent({
   name: "ArtistAlbumTab",
   components: {
@@ -68,7 +66,7 @@ export default defineComponent({
                 src: album.pic,
                 size: COVER_SIZE
               },
-              platform: platform,
+              platform,
               title: {
                 text: album.name,
                 onClick() {
@@ -78,7 +76,7 @@ export default defineComponent({
                   setStoreState({
                     albumDetail: {
                       id: album.mid,
-                      platform: platform
+                      platform
                     }
                   });
                 }

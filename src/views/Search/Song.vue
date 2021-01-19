@@ -28,18 +28,18 @@
 </template>
 
 <script lang="ts">
-import PlatformTag from "@/components/PlatformTag.vue";
-import { defineComponent, ref, onMounted, watch, computed } from "vue";
-import { useRoute } from "vue-router";
-import store from "@/store";
-import { TableColumn, Pagination } from "@/types/antd";
-import { Song } from "@/types/response/song";
-import { SearchSongResultResponse, SearchType } from "@/types/response/search";
-import { Entity } from "@/types/response/base";
-import { fetchAlbumDetail, searchByKeyword } from "@/utils/apis";
 import { ALBUM_COVER_PLACEHOLDER, SEARCH_PAGE_SIZE } from "@/utils/constants";
+import { Pagination, TableColumn } from "@/types/antd";
+import { SearchSongResultResponse, SearchType } from "@/types/response/search";
+import { computed, defineComponent, onMounted, ref, watch } from "vue";
+import { fetchAlbumDetail, searchByKeyword } from "@/utils/apis";
 import { sec2Time, setStoreState } from "@/utils";
 import { AlbumDetailResponse } from "@/types/response/album";
+import { Entity } from "@/types/response/base";
+import PlatformTag from "@/components/PlatformTag.vue";
+import { Song } from "@/types/response/song";
+import store from "@/store";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   name: "SearchSongTab",

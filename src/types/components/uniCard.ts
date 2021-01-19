@@ -1,4 +1,4 @@
-import { WithKey, ClickableText } from "../base";
+import { ClickableText, WithKey } from "../base";
 import { Platform } from "../response/base";
 
 export interface UniCardData extends WithKey {

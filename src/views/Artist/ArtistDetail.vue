@@ -5,18 +5,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from "vue";
-import store from "@/store";
-import { setStoreState } from "@/utils";
+import { defineComponent, ref } from "vue";
+import { ArtistDetailResponse } from "@/types/response/artist";
 import { getArtistDetail } from "@/utils/apis";
 import { message } from "ant-design-vue";
+import store from "@/store";
 import { useRouter } from "vue-router";
-import { Entity, Platform } from "@/types/response/base";
-import { ArtistDetailResponse } from "@/types/response/artist";
 export default defineComponent({
   name: "ArtistDetailTab",
   setup() {
-    const loading = computed(() => store.state.loading);
     const router = useRouter();
     const artistDetail = ref("");
     const { id, platform } = store.state.artistDetail;
