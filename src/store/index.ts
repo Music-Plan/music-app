@@ -11,6 +11,10 @@ export default createStore<StoreState>({
       keywordUpdated: false,
       keyword: ""
     },
+    artistDetail: {
+      id: null,
+      platform: null
+    },
     albumDetail: {
       id: null,
       platform: null

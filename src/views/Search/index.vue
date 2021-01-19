@@ -6,6 +6,9 @@
     <a-tab-pane key="album" tab="专辑">
       <album-tab />
     </a-tab-pane>
+    <a-tab-pane key="artist" tab="歌手">
+      <artist-tab />
+    </a-tab-pane>
   </a-tabs>
 </template>
 
@@ -13,6 +16,7 @@
 import { computed, defineComponent } from "vue";
 import SongTab from "./Song.vue";
 import AlbumTab from "./Album.vue";
+import ArtistTab from "./Artist.vue";
 import { setStoreState } from "@/utils";
 import store from "@/store";
 
@@ -20,7 +24,8 @@ export default defineComponent({
   name: "SearchResult",
   components: {
     SongTab,
-    AlbumTab
+    AlbumTab,
+    ArtistTab
   },
   setup() {
     const activeKey = computed(() => store.state.search.activeKey);

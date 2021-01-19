@@ -8,6 +8,10 @@ export interface StoreState {
     keywordUpdated: boolean;
     keyword: string;
   };
+  artistDetail: {
+    id: number | string | null;
+    platform: Platform | null;
+  };
   albumDetail: {
     id: number | string | null;
     platform: Platform | null;
