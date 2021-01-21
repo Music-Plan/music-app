@@ -21,25 +21,12 @@
         </div>
       </div>
       <div class="content">
-        <a-table
-          rowKey="id"
-          :columns="columns"
-          :data-source="songs"
-          :pagination="false"
-        >
-          <template v-slot:name="{ text, index }">
-            <span class="song-order">{{
-              (index + 1).toString().padStart(2, 0)
-            }}</span>
-            <span>{{ text }}</span>
-          </template>
-          <template v-slot:artists="{ text: artists }">
-            <template v-for="(artist, index) of artists" :key="artist.id">
-              <a>{{ artist.name }}</a>
-              <span v-if="index < artists.length - 1"> / </span>
-            </template>
-          </template>
-        </a-table>
+        <song-list
+          disable-pagination
+          showIndex
+          :data="songs"
+          :album-info="albumInfo"
+        />
       </div>
     </template>
   </div>
@@ -47,17 +34,17 @@
 
 <script lang="ts">
 import { Album, AlbumDetailResponse } from "@/types/response/album";
-import { computed, defineComponent, ref } from "vue";
-import { sec2Time, setStoreState } from "@/utils";
+import { computed, defineComponent, reactive, ref } from "vue";
+import { setStoreState } from "@/utils";
 import { COVER_SIZE } from "@/utils/constants";
 import { CaretRightOutlined } from "@/icons";
 import { Song } from "@/types/response/song";
-import { TableColumn } from "@/types/antd";
 import dayjs from "dayjs";
 import { fetchAlbumDetail } from "@/utils/apis";
 import { message } from "ant-design-vue";
 import store from "@/store";
 import { useRouter } from "vue-router";
+import SongList from "@/components/SongList.vue";
 
 type AlbumInfo = Omit<Album, "songCount">;
 type AlbumSong = Omit<Song, "album">;
@@ -65,7 +52,8 @@ type AlbumSong = Omit<Song, "album">;
 export default defineComponent({
   name: "AlbumDetail",
   components: {
-    CaretRightOutlined
+    CaretRightOutlined,
+    SongList
   },
   setup() {
     const router = useRouter();
@@ -83,15 +71,23 @@ export default defineComponent({
         loading: true
       };
     }
+    const albumInfo = reactive({
+      mid: id,
+      pic: info.value?.pic
+    });
     fetchAlbumDetail(id!, platform!)
       .then(res => {
         const detail = (res.data as AlbumDetailResponse).data;
         info.value = detail.info;
+        albumInfo.pic = detail.info.pic;
         info.value.publishTime = dayjs(info.value.publishTime).format(
           "YYYY-MM-DD"
         );
         if (platform === "netease") {
           info.value.pic += `?param=${COVER_SIZE}x${COVER_SIZE}`;
+        }
+        for (const song of detail.songs) {
+          song.platform = platform;
         }
         songs.value = detail.songs;
       })
@@ -100,33 +96,9 @@ export default defineComponent({
       });
     setStoreState({ loading: true });
 
-    const columns: TableColumn<Song>[] = [
-      {
-        title: "歌名",
-        dataIndex: "name",
-        width: 100,
-        ellipsis: true,
-        slots: { customRender: "name" }
-      },
-      {
-        title: "艺术家",
-        dataIndex: "artists",
-        width: 50,
-        ellipsis: true,
-        slots: { customRender: "artists" }
-      },
-      {
-        title: "时长",
-        dataIndex: "duration",
-        width: 20,
-        customRender: ({ text: duration }: { text: number }) =>
-          sec2Time(duration)
-      }
-    ];
-
     return {
       info,
-      columns,
+      albumInfo,
       songs,
       loading,
       COVER_SIZE

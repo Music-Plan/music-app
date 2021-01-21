@@ -1,50 +1,38 @@
 <template>
   <div id="search-song">
-    <a-table
-      rowKey="id"
-      :columns="columns"
-      :data-source="songs"
-      :pagination="{
-        defaultPageSize: SEARCH_PAGE_SIZE * 2,
-        total: resultInfo.total,
-        current: resultInfo.pageNo
-      }"
-      :show-total="(total, range) => `${total}条结果`"
-      @change="search"
-      :customRow="customRow"
-    >
-      <template v-slot:name="{ text, record }">
-        <platform-tag :platform="record.platform"></platform-tag>
-        <span>{{ text }}</span>
-      </template>
-      <template v-slot:artists="{ text: artists }">
-        <template v-for="(artist, index) of artists" :key="artist.id">
-          <a>{{ artist.name }}</a>
-          <span v-if="index < artists.length - 1"> / </span>
-        </template>
-      </template>
-    </a-table>
+    <song-list
+      show-platform
+      show-album
+      :data="songs"
+      :current="pageInfo.current"
+      :total="pageInfo.total"
+      @page-change="search"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { ALBUM_COVER_PLACEHOLDER, SEARCH_PAGE_SIZE } from "@/utils/constants";
-import { Pagination, TableColumn } from "@/types/antd";
+import { SEARCH_PAGE_SIZE } from "@/utils/constants";
 import { SearchSongResultResponse, SearchType } from "@/types/response/search";
-import { computed, defineComponent, onMounted, ref, watch } from "vue";
-import { fetchAlbumDetail, searchByKeyword } from "@/utils/apis";
-import { sec2Time, setStoreState } from "@/utils";
-import { AlbumDetailResponse } from "@/types/response/album";
-import { Entity } from "@/types/response/base";
-import PlatformTag from "@/components/PlatformTag.vue";
+import {
+  computed,
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  watch
+} from "vue";
+import { searchByKeyword } from "@/utils/apis";
+import { setStoreState } from "@/utils";
 import { Song } from "@/types/response/song";
 import store from "@/store";
 import { useRoute } from "vue-router";
+import SongList from "@/components/SongList.vue";
 
 export default defineComponent({
   name: "SearchSongTab",
   components: {
-    PlatformTag
+    SongList
   },
   setup() {
     const route = useRoute();
@@ -52,25 +40,18 @@ export default defineComponent({
     const searchType: SearchType = "song";
     const songs = ref<Song[]>([]);
     const loading = computed(() => store.state.loading);
-    const resultInfo = ref({
-      pageNo: 1,
+    const pageInfo = reactive({
+      current: 1,
       total: 0
     });
-    const search = (pagination: Partial<Pagination>) => {
-      searchByKeyword(
-        store.state.search.keyword,
-        pagination.current,
-        searchType
-      )
+    const search = (current = 1) => {
+      pageInfo.current = current;
+      searchByKeyword(store.state.search.keyword, current, searchType)
         .then(res => {
           const searchResult = (res.data as SearchSongResultResponse).data;
           songs.value = searchResult.qqMusic.songs
             .map(song => {
               song.platform = "qq";
-              song.url = song.url?.replace(
-                "http://isure.stream.qqmusic.qq.com",
-                "/qq-stream"
-              );
               return song;
             })
             .concat(
@@ -79,10 +60,8 @@ export default defineComponent({
                 return song;
               })
             );
-          resultInfo.value = {
-            pageNo: searchResult.pageNo,
-            total: searchResult.qqMusic.total + searchResult.cloudMusic.total
-          };
+          pageInfo.total =
+            searchResult.cloudMusic.total + searchResult.qqMusic.total;
         })
         .finally(() => {
           setStoreState({
@@ -101,8 +80,9 @@ export default defineComponent({
         if (
           store.state.search.keywordUpdated &&
           store.state.search.activeKey === "song"
-        )
-          search({ current: 1 });
+        ) {
+          search();
+        }
       },
       {
         immediate: true
@@ -121,80 +101,12 @@ export default defineComponent({
       }
     });
 
-    const coverLog: {
-      [mid: string]: string;
-    } = {};
-    const customRow = (record: Song) => {
-      return {
-        dblclick() {
-          // qq音乐没有专辑封面数据，因此需要额外请求
-          if (record.platform === "qq" && !coverLog[record.album.mid!]) {
-            fetchAlbumDetail(record.album.mid!, "qq").then(res => {
-              const pic = (res.data as AlbumDetailResponse).data.info.pic;
-              // 将返回的数据保存在log内，避免重复请求
-              coverLog[record.album.mid!] = pic;
-              setStoreState({
-                playing: {
-                  cover: pic
-                }
-              });
-            });
-          }
-          setStoreState({
-            playing: {
-              url: record.url,
-              cover:
-                record.platform === "netease"
-                  ? `${record.album.pic}?param=64x64`
-                  : coverLog[record.album.mid!] ?? ALBUM_COVER_PLACEHOLDER,
-              title: record.name,
-              artist: record.artists.map(artist => artist.name).join(" / "),
-              duration: record.duration
-            }
-          });
-        }
-      };
-    };
-
-    const columns: TableColumn<Song>[] = [
-      {
-        title: "歌名",
-        dataIndex: "name",
-        width: 200,
-        ellipsis: true,
-        slots: { customRender: "name" }
-      },
-      {
-        title: "艺术家",
-        dataIndex: "artists",
-        width: 100,
-        ellipsis: true,
-        slots: { customRender: "artists" }
-      },
-      {
-        title: "专辑",
-        dataIndex: "album",
-        width: 200,
-        ellipsis: true,
-        customRender: ({ text: curData }: { text: Entity }) => curData.name
-      },
-      {
-        title: "时长",
-        dataIndex: "duration",
-        width: 50,
-        customRender: ({ text: duration }: { text: number }) =>
-          sec2Time(duration)
-      }
-    ];
-
     return {
-      columns,
       songs,
       loading,
-      resultInfo,
       search,
-      SEARCH_PAGE_SIZE,
-      customRow
+      pageInfo,
+      SEARCH_PAGE_SIZE
     };
   }
 });
