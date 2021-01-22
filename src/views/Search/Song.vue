@@ -1,8 +1,6 @@
 <template>
   <div id="search-song">
     <song-list
-      show-platform
-      show-album
       :data="songs"
       :current="pageInfo.current"
       :total="pageInfo.total"
