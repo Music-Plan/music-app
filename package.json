@@ -14,7 +14,7 @@
     "axios": "^0.21.0",
     "core-js": "^3.6.5",
     "dayjs": "^1.9.3",
-    "lodash": "^4.17.20",
+    "lodash-es": "^4.17.20",
     "nanoid": "^3.1.16",
     "vue": "^3.0.0",
     "vue-router": "^4.0.3",
@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.19",
-    "@types/lodash": "^4.14.164",
+    "@types/lodash-es": "^4.17.4",
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "@vue/cli-plugin-babel": "~4.5.0",

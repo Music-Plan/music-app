@@ -1,5 +1,5 @@
 import { createStore } from "vuex";
-import { merge } from "lodash";
+import { merge } from "lodash-es";
 import { StoreState } from "../types/store";
 
 export default createStore<StoreState>({
