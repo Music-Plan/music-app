@@ -7,17 +7,14 @@
       <span>{{ artistName }}</span>
     </div>
     <a-tabs :activeKey="activeKey" @change="setActiveTab">
-      <a-tab-pane key="info" tab="精选">
-        <hot-song-tab @change="setActiveTab" />
+      <a-tab-pane key="pick up" tab="精选">
+        <pick-up-tab @change="setActiveTab" />
       </a-tab-pane>
       <a-tab-pane key="song" tab="歌曲">
-        <all-song-tab />
+        <song-tab />
       </a-tab-pane>
       <a-tab-pane key="album" tab="专辑">
         <album-tab />
-      </a-tab-pane>
-      <a-tab-pane key="detail" tab="详情">
-        <detail-tab />
       </a-tab-pane>
     </a-tabs>
   </section>
@@ -25,21 +22,19 @@
 
 <script lang="ts">
 import { defineComponent, ref } from "vue";
-import AlbumTab from "./ArtistAlbum.vue";
-import AllSongTab from "./AllSong.vue";
-import DetailTab from "./ArtistDetail.vue";
-import HotSongTab from "./HotSong.vue";
+import AlbumTab from "./Album.vue";
+import SongTab from "./Song.vue";
+import PickUpTab from "./PickUp.vue";
 import { useRoute } from "vue-router";
 export default defineComponent({
   name: "artistDetail",
   components: {
-    HotSongTab,
-    AllSongTab,
-    DetailTab,
+    PickUpTab,
+    SongTab,
     AlbumTab
   },
   setup() {
-    const activeKey = ref("info");
+    const activeKey = ref("pick up");
     const route = useRoute();
     const setActiveTab = (key: string) => {
       activeKey.value = key;

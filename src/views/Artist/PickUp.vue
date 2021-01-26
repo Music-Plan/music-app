@@ -7,19 +7,7 @@
           >更多<RightOutlined :style="{ fontSize: '12px', color: '#999' }"
         /></span>
       </div>
-      <a-table
-        :columns="columns"
-        :data-source="hotSongs"
-        :pagination="false"
-        :show-total="(total, range) => `${total}条结果`"
-      >
-        <template v-slot:artists="{ text: artists }">
-          <template v-for="(artist, index) of artists" :key="artist.id">
-            <a>{{ artist.name }}</a>
-            <span v-if="index < artists.length - 1"> / </span>
-          </template>
-        </template>
-      </a-table>
+      <song-list :data="hotSongs" disable-pagination />
     </div>
     <div class="hot-album">
       <div class="hot-title">
@@ -46,35 +34,32 @@
 </template>
 
 <script lang="ts">
-import {
-  ArtistAlbumResponse,
-  HotSong,
-  HotSongResponse
-} from "@/types/response/artist";
+import { ArtistAlbumResponse, HotSongResponse } from "@/types/response/artist";
+import { Song } from "@/types/response/song";
 import { defineComponent, ref } from "vue";
-import { expandDims, sec2Time, setStoreState } from "@/utils";
+import { expandDims, setStoreState } from "@/utils";
 import { getArtistAlbums, getHotSongs } from "@/utils/apis";
 import { COVER_SIZE } from "@/utils/constants";
-import { Entity } from "@/types/response/base";
 import { RightOutlined } from "@/icons";
-import { TableColumn } from "@/types/antd";
 import UniCard from "@/components/UniCard.vue";
 import { UniCardData } from "@/types/components/uniCard";
-import { WithKey } from "@/types/base";
 import dayjs from "dayjs";
 import { message } from "ant-design-vue";
 import store from "@/store";
 import { useRouter } from "vue-router";
+import SongList from "@/components/SongList.vue";
+
 export default defineComponent({
-  name: "HotSongTab",
+  name: "ArtistPickUpTab",
   components: {
     RightOutlined,
-    UniCard
+    UniCard,
+    SongList
   },
   setup(props, { emit }) {
     const router = useRouter();
     const albums = ref<UniCardData[][]>();
-    const hotSongs = ref<(HotSong & WithKey)[]>([]);
+    const hotSongs = ref<Song[]>([]);
     const { id, platform } = store.state.artistDetail;
     if (!id || !platform) {
       message.info("没有数据，回到首页");
@@ -132,8 +117,8 @@ export default defineComponent({
       .then(res => {
         const songResult = (res.data as HotSongResponse).data;
         hotSongs.value = songResult.hotSongs;
-        for (const hotsong of hotSongs.value) {
-          hotsong.key = hotsong.id;
+        for (const song of hotSongs.value) {
+          song.platform = platform!;
         }
       })
       .finally(() => {
@@ -144,38 +129,8 @@ export default defineComponent({
     setStoreState({
       loading: true
     });
-    const columns: TableColumn<HotSong>[] = [
-      {
-        title: "歌名",
-        dataIndex: "name",
-        width: 200,
-        ellipsis: true,
-        slots: { customRender: "name" }
-      },
-      {
-        title: "艺术家",
-        dataIndex: "artists",
-        width: 100,
-        ellipsis: true,
-        slots: { customRender: "artists" }
-      },
-      {
-        title: "专辑",
-        dataIndex: "album",
-        width: 200,
-        ellipsis: true,
-        customRender: ({ text: curData }: { text: Entity }) => curData.name
-      },
-      {
-        title: "时长",
-        dataIndex: "duration",
-        width: 50,
-        customRender: ({ text: duration }: { text: number }) =>
-          sec2Time(Math.floor(duration))
-      }
-    ];
+
     return {
-      columns,
       hotSongs,
       platform,
       jumpTo,

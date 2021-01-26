@@ -1,5 +1,6 @@
-import { SongQuality } from "./song";
 import { BaseResponse, Entity, Platform } from "./base";
+import { Song } from "./song";
+import { Album } from "./album";
 
 export interface Artist extends Entity {
   pic: string;
@@ -10,22 +11,8 @@ export interface Artist extends Entity {
   platform: Platform;
 }
 
-export interface HotSong extends Entity {
-  vip: boolean;
-  artists: Entity[];
-  album: Entity & {
-    /**
-     * 网易云有，qq音乐没有
-     */
-    pic?: string;
-  };
-  quality: SongQuality[];
-  url: string;
-  duration: number;
-}
-
 export interface HotSongResult {
-  hotSongs: HotSong[];
+  hotSongs: Song[];
   total: number;
   pageSize: number;
 }
@@ -34,16 +21,8 @@ export interface ArtistDetail {
   desc: string;
 }
 
-export interface ArtistAlbum extends Entity {
-  pic: string;
-  publishTime: string;
-  artist: Entity;
-  songCount: number;
-  platform: Platform;
-}
-
 export interface ArtistAlbumResult {
-  albums: Omit<ArtistAlbum, "artist">[];
+  albums: Album[];
   total: number;
   more?: boolean;
 }

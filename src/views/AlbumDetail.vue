@@ -21,12 +21,7 @@
         </div>
       </div>
       <div class="content">
-        <song-list
-          disable-pagination
-          showIndex
-          :data="songs"
-          :album-info="albumInfo"
-        />
+        <song-list disable-pagination :data="songs" :cover="albumPic" />
       </div>
     </template>
   </div>
@@ -34,7 +29,7 @@
 
 <script lang="ts">
 import { Album, AlbumDetailResponse } from "@/types/response/album";
-import { computed, defineComponent, reactive, ref } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import { setStoreState } from "@/utils";
 import { COVER_SIZE } from "@/utils/constants";
 import { CaretRightOutlined } from "@/icons";
@@ -71,15 +66,12 @@ export default defineComponent({
         loading: true
       };
     }
-    const albumInfo = reactive({
-      mid: id,
-      pic: info.value?.pic
-    });
+    const albumPic = ref("");
     fetchAlbumDetail(id!, platform!)
       .then(res => {
         const detail = (res.data as AlbumDetailResponse).data;
         info.value = detail.info;
-        albumInfo.pic = detail.info.pic;
+        albumPic.value = detail.info.pic;
         info.value.publishTime = dayjs(info.value.publishTime).format(
           "YYYY-MM-DD"
         );
@@ -98,7 +90,7 @@ export default defineComponent({
 
     return {
       info,
-      albumInfo,
+      albumPic,
       songs,
       loading,
       COVER_SIZE
